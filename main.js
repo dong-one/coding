@@ -1,5 +1,6 @@
 const generateBtn = document.getElementById('generate-btn');
 const numbersContainer = document.getElementById('numbers');
+const themeSwitch = document.getElementById('checkbox');
 
 generateBtn.addEventListener('click', () => {
     const numbers = new Set();
@@ -45,4 +46,14 @@ function createNumberDiv(number) {
     }
 
     return numberDiv;
+}
+
+themeSwitch.addEventListener('change', () => {
+    document.body.classList.toggle('dark-mode');
+});
+
+// Check for preferred color scheme
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark-mode');
+    themeSwitch.checked = true;
 }
