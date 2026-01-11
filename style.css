@@ -3,6 +3,7 @@
     --container-bg: #fff;
     --text-color: #333;
     --button-bg: #4CAF50;
+    --manual-btn-bg: #2196F3;
     --button-text: white;
 }
 
@@ -13,7 +14,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
     transition: background-color 0.3s, color 0.3s;
 }
@@ -23,6 +24,7 @@ body.dark-mode {
     --container-bg: #2c2c2c;
     --text-color: #f0f2f5;
     --button-bg: #5a5a5a;
+    --manual-btn-bg: #0d8bf2;
     --button-text: #f0f2f5;
 }
 
@@ -33,6 +35,8 @@ body.dark-mode {
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s;
+    width: 90%;
+    max-width: 500px;
 }
 
 h1 {
@@ -40,41 +44,142 @@ h1 {
     margin-bottom: 1.5rem;
 }
 
+.game-options {
+    margin-bottom: 1.5rem;
+}
+
+.game-options label {
+    margin-right: 10px;
+}
+
+#game-count {
+    padding: 5px;
+    border-radius: 5px;
+}
+
 .numbers-container {
     display: flex;
-    justify-content: center;
-    gap: 10px;
+    flex-direction: column; /* Stack games vertically */
+    align-items: center;
+    gap: 15px;
     margin-bottom: 2rem;
 }
 
+.lotto-game {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
 .number {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: bold;
     color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-#generate-btn {
-    background-color: var(--button-bg);
+#generate-btn, #manual-btn, #manual-select-btn {
     color: var(--button-text);
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, filter 0.3s ease;
+    margin: 5px;
 }
 
-#generate-btn:hover {
+#generate-btn {
+     background-color: var(--button-bg);
+}
+
+#manual-btn {
+    background-color: var(--manual-btn-bg);
+}
+
+#generate-btn:hover, #manual-btn:hover, #manual-select-btn:hover {
     filter: brightness(90%);
 }
 
+
+/* Modal Styles */
+.modal {
+    display: none; /* Keep it hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center; /* Added for flexbox centering */
+    align-items: center; /* Added for flexbox centering */
+}
+
+.modal-content {
+    background-color: var(--container-bg);
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 450px;
+    position: relative;
+}
+
+.close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: var(--text-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.manual-numbers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.manual-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #eee;
+    color: #333;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.manual-number.selected {
+    background-color: #2196F3;
+    color: white;
+}
+
+#manual-select-btn {
+    background-color: var(--button-bg);
+}
+
+
+/* Theme Switcher */
 .theme-switch-wrapper {
     display: flex;
     align-items: center;
