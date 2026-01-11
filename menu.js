@@ -178,9 +178,11 @@ const ladderBottom = document.getElementById('ladder-bottom');
 const ladderCanvas = document.getElementById('ladder-canvas');
 const ladderRerollBtn = document.getElementById('ladder-reroll');
 const ladderResult = document.getElementById('ladder-result');
-const ladderTopInput = document.getElementById('ladder-top-input');
-const ladderBottomInput = document.getElementById('ladder-bottom-input');
 const ladderManualBtn = document.getElementById('ladder-manual');
+const ladderTopList = document.getElementById('ladder-top-list');
+const ladderBottomList = document.getElementById('ladder-bottom-list');
+const ladderTopAdd = document.getElementById('ladder-top-add');
+const ladderBottomAdd = document.getElementById('ladder-bottom-add');
 const resultModal = document.getElementById('result-modal');
 const resultCloseBtn = document.getElementById('result-close');
 const resultImage = document.getElementById('result-image');
@@ -273,12 +275,19 @@ function startSlotMachine() {
     slotMachine.classList.add('is-spinning');
     const startTime = Date.now();
     const duration = 5000;
+    let order = shuffleArray([...pool]);
+    let index = 0;
     const tick = () => {
-        const randomMenu = pool[Math.floor(Math.random() * pool.length)];
-        menuTitle.textContent = randomMenu.name;
-        menuDesc.textContent = randomMenu.description;
-        renderTags(randomMenu.tags);
-        timeSlot.textContent = getCategoryLabel(randomMenu.category);
+        if (index >= order.length) {
+            order = shuffleArray([...pool]);
+            index = 0;
+        }
+        const currentMenu = order[index];
+        index += 1;
+        menuTitle.textContent = currentMenu.name;
+        menuDesc.textContent = currentMenu.description;
+        renderTags(currentMenu.tags);
+        timeSlot.textContent = getCategoryLabel(currentMenu.category);
         if (Date.now() - startTime >= duration) {
             if (slotTimer) {
                 clearTimeout(slotTimer);
@@ -415,11 +424,17 @@ function getLadderItems() {
     return { items, limited, total: pool.length };
 }
 
-function parseManualInput(value) {
-    return value
-        .split(/[\n,]/)
-        .map((item) => item.trim())
+function parseManualInputs(list) {
+    return Array.from(list.querySelectorAll('input'))
+        .map((input) => input.value.trim())
         .filter((item) => item.length > 0);
+}
+
+function addManualInput(list, placeholder) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = placeholder;
+    list.appendChild(input);
 }
 
 function buildLadderState(items, topLabels = null) {
@@ -613,8 +628,8 @@ function renderLadder(manual = false) {
         return;
     }
     if (manual) {
-        const topValues = parseManualInput(ladderTopInput.value);
-        const bottomValues = parseManualInput(ladderBottomInput.value);
+        const topValues = parseManualInputs(ladderTopList);
+        const bottomValues = parseManualInputs(ladderBottomList);
         if (topValues.length < 2 || bottomValues.length < 2) {
             ladderTitle.textContent = '수동 사다리 게임';
             ladderDesc.textContent = '위/아래에 2개 이상 입력해 주세요.';
@@ -854,6 +869,14 @@ ladderRerollBtn.addEventListener('click', () => {
 
 ladderManualBtn.addEventListener('click', () => {
     renderLadder(true);
+});
+
+ladderTopAdd.addEventListener('click', () => {
+    addManualInput(ladderTopList, '예: A');
+});
+
+ladderBottomAdd.addEventListener('click', () => {
+    addManualInput(ladderBottomList, '예: 메뉴');
 });
 
 ladderTop.addEventListener('click', (event) => {

@@ -574,13 +574,29 @@ body {
 
 .ladder-inputs span {
     display: block;
-    margin-bottom: 6px;
     color: var(--muted);
     font-size: 0.9rem;
     font-weight: 600;
 }
 
-.ladder-inputs textarea {
+.ladder-input-group {
+    display: grid;
+    gap: 10px;
+}
+
+.ladder-input-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.ladder-input-list {
+    display: grid;
+    gap: 8px;
+}
+
+.ladder-input-list input {
     width: 100%;
     border: 1px solid var(--line);
     border-radius: 12px;
@@ -589,11 +605,9 @@ body {
     font-size: 0.95rem;
     background: rgba(255, 255, 255, 0.85);
     color: var(--ink);
-    resize: vertical;
-    min-height: 74px;
 }
 
-.ladder-inputs textarea:focus {
+.ladder-input-list input:focus {
     outline: none;
     border-color: rgba(13, 139, 255, 0.5);
     box-shadow: 0 0 0 3px rgba(13, 139, 255, 0.12);

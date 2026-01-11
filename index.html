@@ -14,7 +14,7 @@
                 <h1>오늘 뭐 먹지?</h1>
                 <p>기분, 시간, 취향에 맞게 한 번에 골라주는 메뉴 추천 스튜디오.</p>
                 <div class="hero-actions">
-                    <button class="btn primary" id="recommend-btn">메뉴 추천 받기</button>
+                    <button class="btn primary" id="recommend-btn">추천 시작</button>
                     <a class="btn ghost" href="lotto.html">로또 번호 생성</a>
                 </div>
             </div>
@@ -121,13 +121,25 @@
             </div>
             <p class="modal-desc" id="ladder-desc">시작 지점을 눌러 메뉴 결과를 확인하세요.</p>
             <div class="ladder-inputs">
-                <div>
-                    <span>사다리 위(시작)</span>
-                    <textarea id="ladder-top-input" rows="2" placeholder="예: A, B, C"></textarea>
+                <div class="ladder-input-group">
+                    <div class="ladder-input-header">
+                        <span>사다리 위(시작)</span>
+                        <button class="btn text" type="button" id="ladder-top-add">추가</button>
+                    </div>
+                    <div class="ladder-input-list" id="ladder-top-list">
+                        <input type="text" placeholder="예: A">
+                        <input type="text" placeholder="예: B">
+                    </div>
                 </div>
-                <div>
-                    <span>사다리 아래(도착)</span>
-                    <textarea id="ladder-bottom-input" rows="2" placeholder="예: 메뉴1, 메뉴2, 메뉴3"></textarea>
+                <div class="ladder-input-group">
+                    <div class="ladder-input-header">
+                        <span>사다리 아래(도착)</span>
+                        <button class="btn text" type="button" id="ladder-bottom-add">추가</button>
+                    </div>
+                    <div class="ladder-input-list" id="ladder-bottom-list">
+                        <input type="text" placeholder="예: 메뉴1">
+                        <input type="text" placeholder="예: 메뉴2">
+                    </div>
                 </div>
                 <button class="btn ghost small" id="ladder-manual">사다리게임(수동)</button>
             </div>
