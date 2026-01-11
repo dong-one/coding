@@ -6,6 +6,30 @@ const menuData = [
         tags: ['따뜻함', '국물', '든든함']
     },
     {
+        name: '제육볶음(덮밥)',
+        category: 'korean',
+        description: '매콤한 제육과 밥의 환상 조합.',
+        tags: ['매콤', '한그릇', '든든함']
+    },
+    {
+        name: '보쌈',
+        category: 'korean',
+        description: '부드러운 수육과 알싸한 김치.',
+        tags: ['푸짐함', '쌈', '만족감']
+    },
+    {
+        name: '순대국',
+        category: 'korean',
+        description: '진한 국물로 든든하게.',
+        tags: ['국밥', '든든함', '진한맛']
+    },
+    {
+        name: '불백',
+        category: 'korean',
+        description: '불향 가득한 돼지불백 한 상.',
+        tags: ['불향', '집밥', '든든함']
+    },
+    {
         name: '비빔밥',
         category: 'korean',
         description: '다채로운 채소와 고소한 고추장의 조합.',
@@ -28,6 +52,12 @@ const menuData = [
         category: 'japanese',
         description: '기름진 연어와 간장의 균형.',
         tags: ['감칠맛', '부드러움', '고급감']
+    },
+    {
+        name: '돈카츠(일식)',
+        category: 'japanese',
+        description: '바삭한 튀김과 소스의 밸런스.',
+        tags: ['바삭함', '일식', '만족감']
     },
     {
         name: '돈코츠 라멘',
@@ -60,6 +90,48 @@ const menuData = [
         tags: ['가벼움', '분식', '따뜻함']
     },
     {
+        name: '돈카츠(경양식)',
+        category: 'western',
+        description: '옛날 감성 경양식 돈카츠.',
+        tags: ['바삭함', '경양식', '추억']
+    },
+    {
+        name: '쌀국수',
+        category: 'vietnamese',
+        description: '진한 육수와 부드러운 쌀국수.',
+        tags: ['국물', '담백함', '베트남']
+    },
+    {
+        name: '버거킹',
+        category: 'fastfood',
+        description: '두툼한 패티의 클래식한 맛.',
+        tags: ['패스트푸드', '버거', '간편함']
+    },
+    {
+        name: '롯데리아',
+        category: 'fastfood',
+        description: '친숙한 맛으로 가볍게 즐기기.',
+        tags: ['패스트푸드', '간편함', '친숙함']
+    },
+    {
+        name: '맥도날드',
+        category: 'fastfood',
+        description: '익숙한 버거와 감자튀김의 조합.',
+        tags: ['패스트푸드', '버거', '스낵']
+    },
+    {
+        name: 'KFC',
+        category: 'fastfood',
+        description: '바삭한 치킨으로 든든하게.',
+        tags: ['치킨', '패스트푸드', '바삭함']
+    },
+    {
+        name: '맘스터치',
+        category: 'fastfood',
+        description: '푸짐한 치킨 버거 한 입.',
+        tags: ['버거', '패스트푸드', '푸짐함']
+    },
+    {
         name: '수플레 팬케이크',
         category: 'dessert',
         description: '포근한 식감과 달콤한 향.',
@@ -80,7 +152,9 @@ const categoryLabels = {
     chinese: '중식',
     western: '양식',
     street: '분식',
-    dessert: '디저트'
+    dessert: '디저트',
+    fastfood: '패스트푸드',
+    vietnamese: '베트남'
 };
 
 const menuTitle = document.getElementById('menu-title');
@@ -161,11 +235,13 @@ function updateHero(menu) {
         menuTitle.textContent = '추천할 메뉴가 없습니다.';
         menuDesc.textContent = '다른 카테고리를 선택해보세요.';
         menuTags.innerHTML = '';
+        timeSlot.textContent = '카테고리';
         return;
     }
     menuTitle.textContent = menu.name;
     menuDesc.textContent = menu.description;
     renderTags(menu.tags);
+    timeSlot.textContent = getCategoryLabel(menu.category);
 }
 
 function resetSlotEffects() {
@@ -199,6 +275,7 @@ function startSlotMachine() {
         menuTitle.textContent = randomMenu.name;
         menuDesc.textContent = randomMenu.description;
         renderTags(randomMenu.tags);
+        timeSlot.textContent = getCategoryLabel(randomMenu.category);
         if (Date.now() - startTime >= duration) {
             if (slotTimer) {
                 clearTimeout(slotTimer);
@@ -277,6 +354,8 @@ function getCategoryAccent(category) {
         western: '#1c1a16',
         street: '#4c7cff',
         dessert: '#ff4f9a',
+        fastfood: '#ff6b2d',
+        vietnamese: '#18a999',
         all: '#0d8bff'
     };
     return accents[category] || '#0d8bff';
@@ -638,7 +717,11 @@ function setActiveCategory(button) {
 }
 
 recommendBtn.addEventListener('click', handleRecommend);
-rerollBtn.addEventListener('click', handleRecommend);
+rerollBtn.addEventListener('click', () => {
+    if (slotRunning) return;
+    const menu = pickRandomMenu();
+    updateHero(menu);
+});
 saveBtn.addEventListener('click', () => {
     const current = menuTitle.textContent;
     const menu = menuData.find((item) => item.name === current);
@@ -752,7 +835,6 @@ window.addEventListener('resize', () => {
     }
 });
 
-timeSlot.textContent = getTimeSlot();
 renderGrid();
-handleRecommend();
+updateHero(menuData[0]);
 renderSaved();
