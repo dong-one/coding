@@ -39,6 +39,29 @@ body.dark-mode {
     max-width: 500px;
 }
 
+/* Language Selector Styles */
+.language-selector {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.language-selector button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.language-selector button:hover {
+    background-color: #0056b3;
+}
+
 h1 {
     color: var(--text-color);
     margin-bottom: 1.5rem;
