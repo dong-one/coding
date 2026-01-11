@@ -77,7 +77,7 @@
                 <h3>제휴 문의</h3>
                 <span class="hint">간단한 정보만 남겨주시면 연락드릴게요.</span>
             </div>
-            <form class="partner-form" action="https://formspree.io/f/xjggbznp" method="POST">
+            <form class="partner-form" id="partner-form" action="https://formspree.io/f/xjggbznp" method="POST">
                 <label>
                     <span>이름</span>
                     <input type="text" name="name" placeholder="담당자 이름" required>
@@ -93,6 +93,7 @@
                 <button class="btn primary span-2" type="submit">제휴 문의 보내기</button>
             </form>
             <p class="form-note">응답 확인을 위해 이메일을 정확히 입력해 주세요.</p>
+            <p class="partner-status" id="partner-status" role="status" aria-live="polite"></p>
         </section>
     </div>
 

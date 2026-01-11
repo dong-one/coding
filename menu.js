@@ -109,6 +109,8 @@ const resultCloseBtn = document.getElementById('result-close');
 const resultImage = document.getElementById('result-image');
 const resultName = document.getElementById('result-name');
 const resultCategory = document.getElementById('result-category');
+const partnerForm = document.getElementById('partner-form');
+const partnerStatus = document.getElementById('partner-status');
 
 let activeCategory = 'all';
 let savedMenus = [];
@@ -615,6 +617,30 @@ resultModal.addEventListener('click', (event) => {
 
 resultCloseBtn.addEventListener('click', () => {
     setResultModalOpen(false);
+});
+
+partnerForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    partnerStatus.textContent = '전송 중...';
+    partnerStatus.classList.remove('is-error');
+    const formData = new FormData(partnerForm);
+    try {
+        const response = await fetch(partnerForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                Accept: 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw new Error('submit failed');
+        }
+        partnerForm.reset();
+        partnerStatus.textContent = '제휴 문의가 전송되었습니다. 감사합니다!';
+    } catch (error) {
+        partnerStatus.textContent = '전송에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+        partnerStatus.classList.add('is-error');
+    }
 });
 
 ladderRerollBtn.addEventListener('click', () => {
