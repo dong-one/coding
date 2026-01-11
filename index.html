@@ -1,64 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Number Studio</title>
-    <link rel="stylesheet" href="style.css">
+    <title>메뉴 추천 스튜디오</title>
+    <link rel="stylesheet" href="menu.css">
 </head>
-<body class="theme-light">
+<body>
     <div class="page">
         <header class="hero">
             <div class="hero-copy">
-                <span class="badge">LOTTO STUDIO</span>
-                <h1 data-i18n="title">Lotto Number Studio</h1>
-                <p data-i18n="subtitle">Design your picks with fast auto draws or precise manual selection.</p>
+                <span class="badge">MENU LAB</span>
+                <h1>오늘 뭐 먹지?</h1>
+                <p>기분, 시간, 취향에 맞게 한 번에 골라주는 메뉴 추천 스튜디오.</p>
+                <div class="hero-actions">
+                    <button class="btn primary" id="recommend-btn">메뉴 추천 받기</button>
+                    <a class="btn ghost" href="lotto.html">로또 번호 생성</a>
+                </div>
             </div>
-            <div class="control-panel">
-                <div class="control-group">
-                    <span class="control-label" data-i18n="language">Language</span>
-                    <div class="control-buttons">
-                        <button id="lang-ko" class="chip">한글</button>
-                        <button id="lang-en" class="chip is-active">English</button>
-                    </div>
+            <div class="hero-card">
+                <div class="hero-card-header">
+                    <span class="pill">오늘의 추천</span>
+                    <span class="hero-time" id="time-slot">점심</span>
                 </div>
-                <div class="control-group">
-                    <span class="control-label" data-i18n="theme">Theme</span>
-                    <div class="control-buttons">
-                        <button id="theme-light" class="chip is-active" data-i18n="lightMode">Light</button>
-                        <button id="theme-dark" class="chip" data-i18n="darkMode">Dark</button>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="game-count" data-i18n="gameCountLabel">Game Count</label>
-                    <select id="game-count">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
+                <h2 id="menu-title">따뜻한 순두부찌개</h2>
+                <p id="menu-desc">칼칼한 국물과 부드러운 두부로 든든하게.</p>
+                <div class="tag-row" id="menu-tags"></div>
+                <div class="hero-card-actions">
+                    <button class="btn subtle" id="reroll-btn">다시 추천</button>
+                    <button class="btn outline" id="save-btn">저장하기</button>
                 </div>
             </div>
         </header>
 
-        <section id="games" class="game-grid"></section>
+        <section class="filters">
+            <div class="filter-header">
+                <h3>카테고리</h3>
+                <span class="hint">버튼을 눌러 취향을 좁혀보세요.</span>
+            </div>
+            <div class="filter-buttons" id="category-buttons">
+                <button class="chip is-active" data-category="all">전체</button>
+                <button class="chip" data-category="korean">한식</button>
+                <button class="chip" data-category="japanese">일식</button>
+                <button class="chip" data-category="chinese">중식</button>
+                <button class="chip" data-category="western">양식</button>
+                <button class="chip" data-category="street">분식</button>
+                <button class="chip" data-category="dessert">디저트</button>
+            </div>
+        </section>
+
+        <section class="menu-grid" id="menu-grid"></section>
+
+        <section class="saved">
+            <div class="saved-header">
+                <h3>저장된 메뉴</h3>
+                <button class="btn text" id="clear-btn">모두 비우기</button>
+            </div>
+            <div class="saved-list" id="saved-list">
+                <p class="empty-state">아직 저장된 메뉴가 없습니다.</p>
+            </div>
+        </section>
     </div>
 
-    <div class="modal" id="manual-modal" aria-hidden="true">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h2 id="modal-title" data-i18n="modalTitle">Select 6 Numbers</h2>
-                <button class="icon-btn" id="modal-close" aria-label="Close">×</button>
-            </div>
-            <div id="number-grid" class="number-grid"></div>
-            <div class="modal-actions">
-                <button id="modal-confirm" class="btn primary" data-i18n="confirm">Confirm</button>
-                <button id="modal-cancel" class="btn ghost" data-i18n="cancel">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="main.js"></script>
+    <script src="menu.js"></script>
 </body>
 </html>

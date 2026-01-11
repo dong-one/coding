@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotto Number Studio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-light">
+    <div class="page">
+        <header class="hero">
+            <div class="hero-copy">
+                <span class="badge">LOTTO STUDIO</span>
+                <h1 data-i18n="title">Lotto Number Studio</h1>
+                <p data-i18n="subtitle">Design your picks with fast auto draws or precise manual selection.</p>
+                <div class="hero-actions">
+                    <a class="chip" href="index.html">메뉴 추천으로</a>
+                </div>
+            </div>
+            <div class="control-panel">
+                <div class="control-group">
+                    <span class="control-label" data-i18n="language">Language</span>
+                    <div class="control-buttons">
+                        <button id="lang-ko" class="chip">한글</button>
+                        <button id="lang-en" class="chip is-active">English</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <span class="control-label" data-i18n="theme">Theme</span>
+                    <div class="control-buttons">
+                        <button id="theme-light" class="chip is-active" data-i18n="lightMode">Light</button>
+                        <button id="theme-dark" class="chip" data-i18n="darkMode">Dark</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="game-count" data-i18n="gameCountLabel">Game Count</label>
+                    <select id="game-count">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <section id="games" class="game-grid"></section>
+    </div>
+
+    <div class="modal" id="manual-modal" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 id="modal-title" data-i18n="modalTitle">Select 6 Numbers</h2>
+                <button class="icon-btn" id="modal-close" aria-label="Close">×</button>
+            </div>
+            <div id="number-grid" class="number-grid"></div>
+            <div class="modal-actions">
+                <button id="modal-confirm" class="btn primary" data-i18n="confirm">Confirm</button>
+                <button id="modal-cancel" class="btn ghost" data-i18n="cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
