@@ -3,44 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Number Generator</title>
+    <title>Lotto Number Studio</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="container">
-        <div class="language-selector">
-            <button id="lang-en">English</button>
-            <button id="lang-ko">한글</button>
-        </div>
-        <h1 data-lang="title">Lotto Number Generator</h1>
-        <div class="game-options">
-            <label for="game-count" data-lang="gameCountLabel">Number of Games:</label>
-            <select id="game-count">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
-        </div>
-        <div id="numbers" class="numbers-container"></div>
-        <button id="generate-btn" data-lang="generateButton">Generate Numbers</button>
-        <button id="manual-btn" data-lang="manualButton">Manual Selection</button>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="checkbox">
-                <input type="checkbox" id="checkbox" />
-                <div class="slider round"></div>
-            </label>
-        </div>
+<body class="theme-light">
+    <div class="page">
+        <header class="hero">
+            <div class="hero-copy">
+                <span class="badge">LOTTO STUDIO</span>
+                <h1 data-i18n="title">Lotto Number Studio</h1>
+                <p data-i18n="subtitle">Design your picks with fast auto draws or precise manual selection.</p>
+            </div>
+            <div class="control-panel">
+                <div class="control-group">
+                    <span class="control-label" data-i18n="language">Language</span>
+                    <div class="control-buttons">
+                        <button id="lang-ko" class="chip">한글</button>
+                        <button id="lang-en" class="chip is-active">English</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <span class="control-label" data-i18n="theme">Theme</span>
+                    <div class="control-buttons">
+                        <button id="theme-light" class="chip is-active" data-i18n="lightMode">Light</button>
+                        <button id="theme-dark" class="chip" data-i18n="darkMode">Dark</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="game-count" data-i18n="gameCountLabel">Game Count</label>
+                    <select id="game-count">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <section id="games" class="game-grid"></section>
     </div>
 
-    <div id="manual-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2 data-lang="manualModalTitle">Select 6 Numbers</h2>
-            <div id="manual-numbers" class="manual-numbers-grid"></div>
-            <button id="manual-select-btn" data-lang="manualConfirmButton">Confirm Selection</button>
-            <input type="hidden" id="current-game-index" value="-1">
+    <div class="modal" id="manual-modal" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 id="modal-title" data-i18n="modalTitle">Select 6 Numbers</h2>
+                <button class="icon-btn" id="modal-close" aria-label="Close">×</button>
+            </div>
+            <div id="number-grid" class="number-grid"></div>
+            <div class="modal-actions">
+                <button id="modal-confirm" class="btn primary" data-i18n="confirm">Confirm</button>
+                <button id="modal-cancel" class="btn ghost" data-i18n="cancel">Cancel</button>
+            </div>
         </div>
     </div>
 
