@@ -193,6 +193,8 @@ const partnerStatus = document.getElementById('partner-status');
 const slotMachine = document.getElementById('slot-machine');
 const slotWindow = document.getElementById('slot-window');
 const slotFireworks = document.getElementById('slot-fireworks');
+const includeBtn = document.getElementById('include-btn');
+const excludeBtn = document.getElementById('exclude-btn');
 
 let activeCategory = 'all';
 let savedMenus = [];
@@ -200,6 +202,8 @@ let ladderState = null;
 let ladderAnimationId = null;
 let slotTimer = null;
 let slotRunning = false;
+let selectionMode = 'include';
+const selectedMenuNames = new Set();
 
 function getTimeSlot() {
     const hour = new Date().getHours();
@@ -216,8 +220,18 @@ function filterMenus() {
     return menuData.filter((menu) => menu.category === activeCategory);
 }
 
+function applySelectionFilter(pool) {
+    if (selectedMenuNames.size === 0) {
+        return pool;
+    }
+    if (selectionMode === 'include') {
+        return pool.filter((menu) => selectedMenuNames.has(menu.name));
+    }
+    return pool.filter((menu) => !selectedMenuNames.has(menu.name));
+}
+
 function pickRandomMenu() {
-    const pool = filterMenus();
+    const pool = applySelectionFilter(filterMenus());
     if (pool.length === 0) {
         return null;
     }
@@ -262,10 +276,14 @@ function resetSlotEffects() {
 
 function startSlotMachine() {
     const currentName = menuTitle.textContent;
-    const pool = filterMenus().filter((menu) => menu.name !== currentName);
-    if (pool.length === 0) {
-        updateHero(pickRandomMenu());
+    const basePool = applySelectionFilter(filterMenus());
+    if (basePool.length === 0) {
+        updateHero(null);
         return;
+    }
+    let pool = basePool.filter((menu) => menu.name !== currentName);
+    if (pool.length === 0) {
+        pool = basePool;
     }
     if (slotRunning) return;
     slotRunning = true;
@@ -318,6 +336,9 @@ function renderGrid() {
     pool.forEach((menu) => {
         const card = document.createElement('article');
         card.className = 'menu-card';
+        if (selectedMenuNames.has(menu.name)) {
+            card.classList.add('is-selected');
+        }
         card.innerHTML = `
             <h4>${menu.name}</h4>
             <p>${menu.description}</p>
@@ -325,7 +346,16 @@ function renderGrid() {
                 ${menu.tags.map((tag) => `<span class="tag">${tag}</span>`).join('')}
             </div>
         `;
-        card.addEventListener('click', () => updateHero(menu));
+        card.addEventListener('click', () => {
+            if (selectedMenuNames.has(menu.name)) {
+                selectedMenuNames.delete(menu.name);
+                card.classList.remove('is-selected');
+            } else {
+                selectedMenuNames.add(menu.name);
+                card.classList.add('is-selected');
+            }
+            updateHero(menu);
+        });
         menuGrid.appendChild(card);
     });
 }
@@ -782,6 +812,7 @@ function setActiveCategory(button) {
         btn.classList.toggle('is-active', btn === button);
     });
     activeCategory = button.dataset.category;
+    selectedMenuNames.clear();
     renderGrid();
     if (!slotRunning) {
         updateHero(filterMenus()[0] || null);
@@ -813,6 +844,20 @@ categoryButtons.addEventListener('click', (event) => {
     const button = event.target.closest('.chip');
     if (!button) return;
     setActiveCategory(button);
+});
+
+includeBtn.addEventListener('click', () => {
+    selectionMode = 'include';
+    includeBtn.classList.add('is-active');
+    excludeBtn.classList.remove('is-active');
+    renderGrid();
+});
+
+excludeBtn.addEventListener('click', () => {
+    selectionMode = 'exclude';
+    excludeBtn.classList.add('is-active');
+    includeBtn.classList.remove('is-active');
+    renderGrid();
 });
 
 ladderOpenBtn.addEventListener('click', () => {
