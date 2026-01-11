@@ -73,6 +73,16 @@ const menuData = [
     }
 ];
 
+const categoryLabels = {
+    all: '전체',
+    korean: '한식',
+    japanese: '일식',
+    chinese: '중식',
+    western: '양식',
+    street: '분식',
+    dessert: '디저트'
+};
+
 const menuTitle = document.getElementById('menu-title');
 const menuDesc = document.getElementById('menu-desc');
 const menuTags = document.getElementById('menu-tags');
@@ -84,9 +94,20 @@ const clearBtn = document.getElementById('clear-btn');
 const categoryButtons = document.getElementById('category-buttons');
 const menuGrid = document.getElementById('menu-grid');
 const savedList = document.getElementById('saved-list');
+const ladderOpenBtn = document.getElementById('ladder-open');
+const ladderModal = document.getElementById('ladder-modal');
+const ladderCloseBtn = document.getElementById('ladder-close');
+const ladderTitle = document.getElementById('ladder-title');
+const ladderDesc = document.getElementById('ladder-desc');
+const ladderTop = document.getElementById('ladder-top');
+const ladderBottom = document.getElementById('ladder-bottom');
+const ladderCanvas = document.getElementById('ladder-canvas');
+const ladderRerollBtn = document.getElementById('ladder-reroll');
+const ladderResult = document.getElementById('ladder-result');
 
 let activeCategory = 'all';
 let savedMenus = [];
+let ladderState = null;
 
 function getTimeSlot() {
     const hour = new Date().getHours();
@@ -177,6 +198,204 @@ function renderSaved() {
     });
 }
 
+function getCategoryLabel(category) {
+    return categoryLabels[category] || '전체';
+}
+
+function shuffleArray(items) {
+    for (let i = items.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+    }
+    return items;
+}
+
+function getLadderItems() {
+    const pool = filterMenus();
+    if (pool.length <= 1) {
+        return { items: pool, limited: false, total: pool.length };
+    }
+    const maxItems = activeCategory === 'all' ? 6 : pool.length;
+    let items = pool;
+    let limited = false;
+    if (pool.length > maxItems) {
+        items = shuffleArray([...pool]).slice(0, maxItems);
+        limited = true;
+    }
+    return { items, limited, total: pool.length };
+}
+
+function buildLadderState(items) {
+    const columns = items.length;
+    const rows = Math.max(8, columns * 4);
+    const rungs = Array.from({ length: rows }, () => Array(columns - 1).fill(false));
+    for (let row = 0; row < rows; row += 1) {
+        for (let col = 0; col < columns - 1; col += 1) {
+            if (col > 0 && rungs[row][col - 1]) {
+                continue;
+            }
+            if (Math.random() < 0.35) {
+                rungs[row][col] = true;
+            }
+        }
+    }
+    const mapping = Array.from({ length: columns }, (_, start) => {
+        let col = start;
+        for (let row = 0; row < rows; row += 1) {
+            if (rungs[row][col]) {
+                col += 1;
+            } else if (col > 0 && rungs[row][col - 1]) {
+                col -= 1;
+            }
+        }
+        return col;
+    });
+    return {
+        columns,
+        rows,
+        rungs,
+        mapping,
+        items,
+        activeIndex: null,
+        metrics: null
+    };
+}
+
+function resizeLadderCanvas() {
+    if (!ladderState) return;
+    const { rows, columns } = ladderState;
+    const rowGap = 16;
+    const topMargin = 16;
+    const bottomMargin = 16;
+    const height = topMargin + rowGap * (rows - 1) + bottomMargin;
+    ladderCanvas.style.height = `${height}px`;
+    const width = ladderCanvas.clientWidth;
+    const dpr = window.devicePixelRatio || 1;
+    ladderCanvas.width = Math.max(1, Math.floor(width * dpr));
+    ladderCanvas.height = Math.max(1, Math.floor(height * dpr));
+    const ctx = ladderCanvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ladderState.metrics = {
+        rowGap,
+        topMargin,
+        bottomMargin,
+        width,
+        height,
+        columnGap: columns > 1 ? width / (columns - 1) : 0
+    };
+}
+
+function drawLadder(activeIndex = null) {
+    if (!ladderState) return;
+    resizeLadderCanvas();
+    const { columns, rows, rungs, metrics } = ladderState;
+    if (!metrics || columns < 2) return;
+    const { width, height, columnGap, topMargin, rowGap } = metrics;
+    const ctx = ladderCanvas.getContext('2d');
+    ctx.clearRect(0, 0, width, height);
+    ctx.lineCap = 'round';
+
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(28, 26, 22, 0.25)';
+    for (let col = 0; col < columns; col += 1) {
+        const x = columnGap * col;
+        ctx.beginPath();
+        ctx.moveTo(x, topMargin);
+        ctx.lineTo(x, topMargin + rowGap * (rows - 1));
+        ctx.stroke();
+    }
+
+    for (let row = 0; row < rows; row += 1) {
+        const y = topMargin + rowGap * row;
+        for (let col = 0; col < columns - 1; col += 1) {
+            if (!rungs[row][col]) continue;
+            const x = columnGap * col;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + columnGap, y);
+            ctx.stroke();
+        }
+    }
+
+    if (activeIndex === null) return;
+    ctx.strokeStyle = '#0d8bff';
+    ctx.lineWidth = 3;
+    let col = activeIndex;
+    let x = columnGap * col;
+    let y = topMargin;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    for (let row = 0; row < rows; row += 1) {
+        const yPos = topMargin + rowGap * row;
+        if (y !== yPos) {
+            ctx.lineTo(x, yPos);
+            y = yPos;
+        }
+        if (rungs[row][col]) {
+            col += 1;
+            x = columnGap * col;
+            ctx.lineTo(x, yPos);
+        } else if (col > 0 && rungs[row][col - 1]) {
+            col -= 1;
+            x = columnGap * col;
+            ctx.lineTo(x, yPos);
+        }
+    }
+    ctx.lineTo(x, topMargin + rowGap * (rows - 1));
+    ctx.stroke();
+}
+
+function renderLadder() {
+    const { items, limited, total } = getLadderItems();
+    if (items.length < 2) {
+        ladderTitle.textContent = `${getCategoryLabel(activeCategory)} 사다리 게임`;
+        ladderDesc.textContent = '해당 카테고리에 메뉴가 충분하지 않습니다.';
+        ladderTop.innerHTML = '';
+        ladderBottom.innerHTML = '';
+        ladderResult.textContent = '다른 카테고리를 선택해 주세요.';
+        ladderCanvas.style.height = '0px';
+        ladderState = null;
+        return;
+    }
+
+    ladderTitle.textContent = `${getCategoryLabel(activeCategory)} 사다리 게임`;
+    ladderDesc.textContent = limited
+        ? `전체 메뉴 ${total}개 중 ${items.length}개로 사다리를 만들었습니다.`
+        : '시작 지점을 눌러 메뉴 결과를 확인하세요.';
+
+    ladderState = buildLadderState(items);
+    ladderTop.style.setProperty('--ladder-columns', ladderState.columns);
+    ladderBottom.style.setProperty('--ladder-columns', ladderState.columns);
+
+    ladderTop.innerHTML = '';
+    ladderBottom.innerHTML = '';
+    ladderResult.textContent = '결과가 여기에 표시됩니다.';
+
+    items.forEach((menu, index) => {
+        const button = document.createElement('button');
+        button.className = 'ladder-start';
+        button.dataset.index = index;
+        button.textContent = `선택 ${index + 1}`;
+        ladderTop.appendChild(button);
+
+        const end = document.createElement('div');
+        end.className = 'ladder-end';
+        end.textContent = menu.name;
+        ladderBottom.appendChild(end);
+    });
+
+    requestAnimationFrame(() => drawLadder(null));
+}
+
+function setModalOpen(isOpen) {
+    ladderModal.classList.toggle('is-open', isOpen);
+    ladderModal.setAttribute('aria-hidden', String(!isOpen));
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    if (isOpen) {
+        renderLadder();
+    }
+}
+
 function handleRecommend() {
     const menu = pickRandomMenu();
     updateHero(menu);
@@ -189,6 +408,9 @@ function setActiveCategory(button) {
     activeCategory = button.dataset.category;
     renderGrid();
     handleRecommend();
+    if (ladderModal.classList.contains('is-open')) {
+        renderLadder();
+    }
 }
 
 recommendBtn.addEventListener('click', handleRecommend);
@@ -210,6 +432,50 @@ categoryButtons.addEventListener('click', (event) => {
     const button = event.target.closest('.chip');
     if (!button) return;
     setActiveCategory(button);
+});
+
+ladderOpenBtn.addEventListener('click', () => {
+    setModalOpen(true);
+});
+
+ladderCloseBtn.addEventListener('click', () => {
+    setModalOpen(false);
+});
+
+ladderModal.addEventListener('click', (event) => {
+    if (event.target.dataset.close) {
+        setModalOpen(false);
+    }
+});
+
+ladderRerollBtn.addEventListener('click', () => {
+    renderLadder();
+});
+
+ladderTop.addEventListener('click', (event) => {
+    const button = event.target.closest('.ladder-start');
+    if (!button || !ladderState) return;
+    const index = Number(button.dataset.index);
+    ladderState.activeIndex = index;
+    ladderTop.querySelectorAll('.ladder-start').forEach((btn) => {
+        btn.classList.toggle('is-active', btn === button);
+    });
+    drawLadder(index);
+    const resultIndex = ladderState.mapping[index];
+    const resultMenu = ladderState.items[resultIndex];
+    ladderResult.textContent = `선택 ${index + 1} 결과: ${resultMenu.name}`;
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && ladderModal.classList.contains('is-open')) {
+        setModalOpen(false);
+    }
+});
+
+window.addEventListener('resize', () => {
+    if (ladderModal.classList.contains('is-open')) {
+        drawLadder(ladderState ? ladderState.activeIndex : null);
+    }
 });
 
 timeSlot.textContent = getTimeSlot();
