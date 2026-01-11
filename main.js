@@ -3,6 +3,8 @@ const numbersContainer = document.getElementById('numbers');
 const themeSwitch = document.getElementById('checkbox');
 const gameCountSelect = document.getElementById('game-count');
 const manualBtn = document.getElementById('manual-btn');
+const langEnBtn = document.getElementById('lang-en');
+const langKoBtn = document.getElementById('lang-ko');
 const manualModalTemplate = document.getElementById('manual-modal'); // The template modal
 // No longer need individual constants for modal elements as they will be dynamic
 
@@ -48,7 +50,7 @@ function switchLanguage(lang) {
 
     // Update titles of any currently open manual selection modals
     activeManualModals.forEach((modal, index) => {
-        const modalTitleElement = modal.querySelector('h2');
+        const modalTitleElement = modal.modalInstance.querySelector('h2');
         if (modalTitleElement) {
             modalTitleElement.textContent = translations[lang].manualModalTitleGame + (index + 1);
         }
