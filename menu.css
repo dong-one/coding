@@ -423,6 +423,7 @@ body {
     align-items: baseline;
     gap: 14px;
     margin-bottom: 16px;
+    flex-wrap: wrap;
 }
 
 .partner {
@@ -439,6 +440,7 @@ body {
     align-items: baseline;
     gap: 14px;
     margin-bottom: 16px;
+    flex-wrap: wrap;
 }
 
 .partner-form {
@@ -516,6 +518,10 @@ body {
 
 .partner-status.is-error {
     color: #b44a2a;
+}
+
+.is-hidden {
+    display: none;
 }
 
 .saved-header {

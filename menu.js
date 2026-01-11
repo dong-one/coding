@@ -197,6 +197,10 @@ const includeBtn = document.getElementById('include-btn');
 const excludeBtn = document.getElementById('exclude-btn');
 const selectionCount = document.getElementById('selection-count');
 const selectionReset = document.getElementById('selection-reset');
+const commentsToggle = document.getElementById('comments-toggle');
+const partnerToggle = document.getElementById('partner-toggle');
+const disqusThread = document.getElementById('disqus_thread');
+const formNote = document.querySelector('.form-note');
 
 let activeCategory = 'all';
 let savedMenus = [];
@@ -955,6 +959,18 @@ partnerForm.addEventListener('submit', async (event) => {
         partnerStatus.textContent = '전송에 실패했습니다. 잠시 후 다시 시도해 주세요.';
         partnerStatus.classList.add('is-error');
     }
+});
+
+commentsToggle.addEventListener('click', () => {
+    const isHidden = disqusThread.classList.toggle('is-hidden');
+    commentsToggle.textContent = isHidden ? '댓글 열기' : '댓글 닫기';
+});
+
+partnerToggle.addEventListener('click', () => {
+    const isHidden = partnerForm.classList.toggle('is-hidden');
+    formNote.classList.toggle('is-hidden');
+    partnerStatus.classList.toggle('is-hidden');
+    partnerToggle.textContent = isHidden ? '문의 열기' : '문의 닫기';
 });
 
 ladderRerollBtn.addEventListener('click', () => {
