@@ -195,6 +195,8 @@ const slotWindow = document.getElementById('slot-window');
 const slotFireworks = document.getElementById('slot-fireworks');
 const includeBtn = document.getElementById('include-btn');
 const excludeBtn = document.getElementById('exclude-btn');
+const selectionCount = document.getElementById('selection-count');
+const selectionReset = document.getElementById('selection-reset');
 
 let activeCategory = 'all';
 let savedMenus = [];
@@ -203,7 +205,7 @@ let ladderAnimationId = null;
 let slotTimer = null;
 let slotRunning = false;
 let selectionMode = 'include';
-const selectedMenuNames = new Set();
+const selectedMenusByCategory = new Map();
 
 function getTimeSlot() {
     const hour = new Date().getHours();
@@ -220,14 +222,28 @@ function filterMenus() {
     return menuData.filter((menu) => menu.category === activeCategory);
 }
 
+function getSelectionSet() {
+    if (!selectedMenusByCategory.has(activeCategory)) {
+        selectedMenusByCategory.set(activeCategory, new Set());
+    }
+    return selectedMenusByCategory.get(activeCategory);
+}
+
+function updateSelectionUI() {
+    const count = getSelectionSet().size;
+    selectionCount.textContent = `선택 ${count}개`;
+    selectionReset.disabled = count === 0;
+}
+
 function applySelectionFilter(pool) {
-    if (selectedMenuNames.size === 0) {
+    const selection = getSelectionSet();
+    if (selection.size === 0) {
         return pool;
     }
     if (selectionMode === 'include') {
-        return pool.filter((menu) => selectedMenuNames.has(menu.name));
+        return pool.filter((menu) => selection.has(menu.name));
     }
-    return pool.filter((menu) => !selectedMenuNames.has(menu.name));
+    return pool.filter((menu) => !selection.has(menu.name));
 }
 
 function pickRandomMenu() {
@@ -332,11 +348,12 @@ function startSlotMachine() {
 
 function renderGrid() {
     const pool = filterMenus();
+    const selection = getSelectionSet();
     menuGrid.innerHTML = '';
     pool.forEach((menu) => {
         const card = document.createElement('article');
         card.className = 'menu-card';
-        if (selectedMenuNames.has(menu.name)) {
+        if (selection.has(menu.name)) {
             card.classList.add('is-selected');
         }
         card.innerHTML = `
@@ -347,17 +364,19 @@ function renderGrid() {
             </div>
         `;
         card.addEventListener('click', () => {
-            if (selectedMenuNames.has(menu.name)) {
-                selectedMenuNames.delete(menu.name);
+            if (selection.has(menu.name)) {
+                selection.delete(menu.name);
                 card.classList.remove('is-selected');
             } else {
-                selectedMenuNames.add(menu.name);
+                selection.add(menu.name);
                 card.classList.add('is-selected');
             }
+            updateSelectionUI();
             updateHero(menu);
         });
         menuGrid.appendChild(card);
     });
+    updateSelectionUI();
 }
 
 function renderSaved() {
@@ -812,7 +831,6 @@ function setActiveCategory(button) {
         btn.classList.toggle('is-active', btn === button);
     });
     activeCategory = button.dataset.category;
-    selectedMenuNames.clear();
     renderGrid();
     if (!slotRunning) {
         updateHero(filterMenus()[0] || null);
@@ -857,6 +875,11 @@ excludeBtn.addEventListener('click', () => {
     selectionMode = 'exclude';
     excludeBtn.classList.add('is-active');
     includeBtn.classList.remove('is-active');
+    renderGrid();
+});
+
+selectionReset.addEventListener('click', () => {
+    getSelectionSet().clear();
     renderGrid();
 });
 
@@ -969,3 +992,4 @@ window.addEventListener('resize', () => {
 renderGrid();
 updateHero(menuData[0]);
 renderSaved();
+updateSelectionUI();
