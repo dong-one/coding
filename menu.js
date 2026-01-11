@@ -178,6 +178,9 @@ const ladderBottom = document.getElementById('ladder-bottom');
 const ladderCanvas = document.getElementById('ladder-canvas');
 const ladderRerollBtn = document.getElementById('ladder-reroll');
 const ladderResult = document.getElementById('ladder-result');
+const ladderTopInput = document.getElementById('ladder-top-input');
+const ladderBottomInput = document.getElementById('ladder-bottom-input');
+const ladderManualBtn = document.getElementById('ladder-manual');
 const resultModal = document.getElementById('result-modal');
 const resultCloseBtn = document.getElementById('result-close');
 const resultImage = document.getElementById('result-image');
@@ -269,7 +272,7 @@ function startSlotMachine() {
     resetSlotEffects();
     slotMachine.classList.add('is-spinning');
     const startTime = Date.now();
-    const duration = 10000;
+    const duration = 5000;
     const tick = () => {
         const randomMenu = pool[Math.floor(Math.random() * pool.length)];
         menuTitle.textContent = randomMenu.name;
@@ -412,7 +415,14 @@ function getLadderItems() {
     return { items, limited, total: pool.length };
 }
 
-function buildLadderState(items) {
+function parseManualInput(value) {
+    return value
+        .split(/[\n,]/)
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0);
+}
+
+function buildLadderState(items, topLabels = null) {
     const columns = items.length;
     const rows = Math.max(8, columns * 4);
     const rungs = Array.from({ length: rows }, () => Array(columns - 1).fill(false));
@@ -443,6 +453,7 @@ function buildLadderState(items) {
         rungs,
         mapping,
         items,
+        topLabels,
         activeIndex: null,
         metrics: null
     };
@@ -596,9 +607,57 @@ function animateLadder(startIndex, onComplete) {
     ladderAnimationId = requestAnimationFrame(step);
 }
 
-function renderLadder() {
+function renderLadder(manual = false) {
     stopLadderAnimation();
     if (slotRunning) {
+        return;
+    }
+    if (manual) {
+        const topValues = parseManualInput(ladderTopInput.value);
+        const bottomValues = parseManualInput(ladderBottomInput.value);
+        if (topValues.length < 2 || bottomValues.length < 2) {
+            ladderTitle.textContent = '수동 사다리 게임';
+            ladderDesc.textContent = '위/아래에 2개 이상 입력해 주세요.';
+            ladderTop.innerHTML = '';
+            ladderBottom.innerHTML = '';
+            ladderResult.textContent = '입력을 확인해 주세요.';
+            ladderResult.classList.remove('is-reveal');
+            ladderCanvas.style.height = '0px';
+            ladderState = null;
+            return;
+        }
+        const count = Math.min(topValues.length, bottomValues.length);
+        const items = bottomValues.slice(0, count).map((label) => ({
+            name: label,
+            category: 'manual',
+            description: '',
+            tags: []
+        }));
+        ladderTitle.textContent = '수동 사다리 게임';
+        ladderDesc.textContent = '시작 지점을 눌러 결과를 확인하세요.';
+        ladderState = buildLadderState(items, topValues.slice(0, count));
+        ladderTop.style.setProperty('--ladder-columns', ladderState.columns);
+        ladderBottom.style.setProperty('--ladder-columns', ladderState.columns);
+        ladderTop.innerHTML = '';
+        ladderBottom.innerHTML = '';
+        ladderResult.textContent = '결과가 여기에 표시됩니다.';
+        ladderResult.classList.remove('is-reveal');
+
+        ladderState.topLabels.forEach((label, index) => {
+            const button = document.createElement('button');
+            button.className = 'ladder-start';
+            button.dataset.index = index;
+            button.textContent = label;
+            ladderTop.appendChild(button);
+
+            const end = document.createElement('div');
+            end.className = 'ladder-end';
+            end.dataset.index = index;
+            end.textContent = ladderState.items[index].name;
+            ladderBottom.appendChild(end);
+        });
+
+        requestAnimationFrame(() => drawLadder(null));
         return;
     }
     const { items, limited, total } = getLadderItems();
@@ -791,6 +850,10 @@ partnerForm.addEventListener('submit', async (event) => {
 
 ladderRerollBtn.addEventListener('click', () => {
     renderLadder();
+});
+
+ladderManualBtn.addEventListener('click', () => {
+    renderLadder(true);
 });
 
 ladderTop.addEventListener('click', (event) => {

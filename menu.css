@@ -563,6 +563,43 @@ body {
     color: var(--muted);
 }
 
+.ladder-inputs {
+    display: grid;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 18px;
+    padding: 14px;
+    border: 1px solid rgba(28, 26, 22, 0.08);
+}
+
+.ladder-inputs span {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.ladder-inputs textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--ink);
+    resize: vertical;
+    min-height: 74px;
+}
+
+.ladder-inputs textarea:focus {
+    outline: none;
+    border-color: rgba(13, 139, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(13, 139, 255, 0.12);
+    background: #fff;
+}
+
 .ladder-controls {
     display: flex;
     justify-content: flex-end;
