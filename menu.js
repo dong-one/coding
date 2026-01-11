@@ -111,11 +111,16 @@ const resultName = document.getElementById('result-name');
 const resultCategory = document.getElementById('result-category');
 const partnerForm = document.getElementById('partner-form');
 const partnerStatus = document.getElementById('partner-status');
+const slotMachine = document.getElementById('slot-machine');
+const slotWindow = document.getElementById('slot-window');
+const slotFireworks = document.getElementById('slot-fireworks');
 
 let activeCategory = 'all';
 let savedMenus = [];
 let ladderState = null;
 let ladderAnimationId = null;
+let slotTimer = null;
+let slotRunning = false;
 
 function getTimeSlot() {
     const hour = new Date().getHours();
@@ -161,6 +166,60 @@ function updateHero(menu) {
     menuTitle.textContent = menu.name;
     menuDesc.textContent = menu.description;
     renderTags(menu.tags);
+}
+
+function resetSlotEffects() {
+    slotMachine.classList.remove('is-spinning', 'is-winner');
+    slotFireworks.querySelectorAll('span').forEach((piece) => {
+        piece.style.animation = 'none';
+    });
+    void slotFireworks.offsetWidth;
+    slotFireworks.querySelectorAll('span').forEach((piece) => {
+        piece.style.animation = '';
+    });
+}
+
+function startSlotMachine() {
+    const pool = filterMenus();
+    if (pool.length === 0) {
+        updateHero(null);
+        return;
+    }
+    if (slotRunning) return;
+    slotRunning = true;
+    recommendBtn.disabled = true;
+    rerollBtn.disabled = true;
+    saveBtn.disabled = true;
+    resetSlotEffects();
+    slotMachine.classList.add('is-spinning');
+    const startTime = Date.now();
+    const duration = 10000;
+    const tick = () => {
+        const randomMenu = pool[Math.floor(Math.random() * pool.length)];
+        menuTitle.textContent = randomMenu.name;
+        menuDesc.textContent = randomMenu.description;
+        renderTags(randomMenu.tags);
+        if (Date.now() - startTime >= duration) {
+            if (slotTimer) {
+                clearTimeout(slotTimer);
+                slotTimer = null;
+            }
+            const finalMenu = pickRandomMenu();
+            updateHero(finalMenu);
+            slotMachine.classList.remove('is-spinning');
+            slotMachine.classList.add('is-winner');
+            setTimeout(() => {
+                slotMachine.classList.remove('is-winner');
+            }, 1500);
+            slotRunning = false;
+            recommendBtn.disabled = false;
+            rerollBtn.disabled = false;
+            saveBtn.disabled = false;
+            return;
+        }
+        slotTimer = setTimeout(tick, 120);
+    };
+    tick();
 }
 
 function renderGrid() {
@@ -460,6 +519,9 @@ function animateLadder(startIndex, onComplete) {
 
 function renderLadder() {
     stopLadderAnimation();
+    if (slotRunning) {
+        return;
+    }
     const { items, limited, total } = getLadderItems();
     if (items.length < 2) {
         ladderTitle.textContent = `${getCategoryLabel(activeCategory)} 사다리 게임`;
@@ -558,8 +620,7 @@ function setModalOpen(isOpen) {
 }
 
 function handleRecommend() {
-    const menu = pickRandomMenu();
-    updateHero(menu);
+    startSlotMachine();
 }
 
 function setActiveCategory(button) {
@@ -568,7 +629,9 @@ function setActiveCategory(button) {
     });
     activeCategory = button.dataset.category;
     renderGrid();
-    handleRecommend();
+    if (!slotRunning) {
+        handleRecommend();
+    }
     if (ladderModal.classList.contains('is-open')) {
         renderLadder();
     }
