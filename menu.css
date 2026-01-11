@@ -390,6 +390,11 @@ body {
     cursor: pointer;
 }
 
+.ladder-start:disabled {
+    opacity: 0.55;
+    cursor: progress;
+}
+
 .ladder-start.is-active {
     background: #1c1a16;
     color: #fff7ef;
@@ -402,6 +407,11 @@ body {
     color: var(--brand);
     font-weight: 600;
     text-align: center;
+}
+
+.ladder-end.is-reveal {
+    animation: ladderPulse 0.8s ease;
+    box-shadow: 0 10px 24px rgba(255, 107, 45, 0.25);
 }
 
 #ladder-canvas {
@@ -417,6 +427,44 @@ body {
     color: #0c3d6d;
     font-weight: 600;
     text-align: center;
+}
+
+.ladder-result.is-reveal {
+    animation: ladderGlow 0.9s ease;
+    background: linear-gradient(135deg, rgba(255, 107, 45, 0.18), rgba(13, 139, 255, 0.2));
+    color: #1c1a16;
+    box-shadow: 0 18px 36px rgba(13, 139, 255, 0.25);
+}
+
+@keyframes ladderGlow {
+    0% {
+        transform: scale(0.96);
+        box-shadow: 0 0 0 rgba(13, 139, 255, 0);
+        opacity: 0.5;
+    }
+    60% {
+        transform: scale(1.04);
+        box-shadow: 0 18px 36px rgba(13, 139, 255, 0.35);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 18px 36px rgba(13, 139, 255, 0.25);
+    }
+}
+
+@keyframes ladderPulse {
+    0% {
+        transform: scale(0.96);
+        opacity: 0.6;
+    }
+    60% {
+        transform: scale(1.06);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 @media (max-width: 900px) {

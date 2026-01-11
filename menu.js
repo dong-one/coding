@@ -108,6 +108,7 @@ const ladderResult = document.getElementById('ladder-result');
 let activeCategory = 'all';
 let savedMenus = [];
 let ladderState = null;
+let ladderAnimationId = null;
 
 function getTimeSlot() {
     const hour = new Date().getHours();
@@ -285,11 +286,18 @@ function resizeLadderCanvas() {
     };
 }
 
-function drawLadder(activeIndex = null) {
-    if (!ladderState) return;
+function stopLadderAnimation() {
+    if (ladderAnimationId) {
+        cancelAnimationFrame(ladderAnimationId);
+        ladderAnimationId = null;
+    }
+}
+
+function drawLadderBase() {
+    if (!ladderState) return null;
     resizeLadderCanvas();
     const { columns, rows, rungs, metrics } = ladderState;
-    if (!metrics || columns < 2) return;
+    if (!metrics || columns < 2) return null;
     const { width, height, columnGap, topMargin, rowGap } = metrics;
     const ctx = ladderCanvas.getContext('2d');
     ctx.clearRect(0, 0, width, height);
@@ -316,36 +324,94 @@ function drawLadder(activeIndex = null) {
             ctx.stroke();
         }
     }
+    return ctx;
+}
 
-    if (activeIndex === null) return;
-    ctx.strokeStyle = '#0d8bff';
-    ctx.lineWidth = 3;
-    let col = activeIndex;
+function buildPathSegments(startIndex) {
+    if (!ladderState || !ladderState.metrics) return null;
+    const { rows, rungs, metrics } = ladderState;
+    const { columnGap, topMargin, rowGap } = metrics;
+    let col = startIndex;
     let x = columnGap * col;
     let y = topMargin;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
+    const segments = [];
     for (let row = 0; row < rows; row += 1) {
         const yPos = topMargin + rowGap * row;
         if (y !== yPos) {
-            ctx.lineTo(x, yPos);
+            segments.push({ x1: x, y1: y, x2: x, y2: yPos });
             y = yPos;
         }
         if (rungs[row][col]) {
+            const nextX = x + columnGap;
+            segments.push({ x1: x, y1: y, x2: nextX, y2: y });
             col += 1;
-            x = columnGap * col;
-            ctx.lineTo(x, yPos);
+            x = nextX;
         } else if (col > 0 && rungs[row][col - 1]) {
+            const nextX = x - columnGap;
+            segments.push({ x1: x, y1: y, x2: nextX, y2: y });
             col -= 1;
-            x = columnGap * col;
-            ctx.lineTo(x, yPos);
+            x = nextX;
         }
     }
-    ctx.lineTo(x, topMargin + rowGap * (rows - 1));
+    return { segments, endColumn: col };
+}
+
+function drawLadderPath(segments, drawLength) {
+    const ctx = drawLadderBase();
+    if (!ctx || !segments) return;
+    ctx.strokeStyle = '#0d8bff';
+    ctx.lineWidth = 3;
+    let remaining = drawLength;
+    ctx.beginPath();
+    segments.forEach((seg) => {
+        if (remaining <= 0) return;
+        const dx = seg.x2 - seg.x1;
+        const dy = seg.y2 - seg.y1;
+        const segLength = Math.hypot(dx, dy);
+        const ratio = Math.min(1, remaining / segLength);
+        const x = seg.x1 + dx * ratio;
+        const y = seg.y1 + dy * ratio;
+        ctx.moveTo(seg.x1, seg.y1);
+        ctx.lineTo(x, y);
+        remaining -= segLength;
+    });
     ctx.stroke();
 }
 
+function drawLadder(activeIndex = null) {
+    if (activeIndex === null) {
+        drawLadderBase();
+        return;
+    }
+    const path = buildPathSegments(activeIndex);
+    if (!path) return;
+    const totalLength = path.segments.reduce((sum, seg) => sum + Math.hypot(seg.x2 - seg.x1, seg.y2 - seg.y1), 0);
+    drawLadderPath(path.segments, totalLength);
+}
+
+function animateLadder(startIndex, onComplete) {
+    stopLadderAnimation();
+    const path = buildPathSegments(startIndex);
+    if (!path) return;
+    const totalLength = path.segments.reduce((sum, seg) => sum + Math.hypot(seg.x2 - seg.x1, seg.y2 - seg.y1), 0);
+    const duration = Math.min(2200, Math.max(900, totalLength * 2));
+    const startTime = performance.now();
+
+    const step = (now) => {
+        const progress = Math.min(1, (now - startTime) / duration);
+        drawLadderPath(path.segments, totalLength * progress);
+        if (progress < 1) {
+            ladderAnimationId = requestAnimationFrame(step);
+        } else {
+            ladderAnimationId = null;
+            if (onComplete) onComplete(path.endColumn);
+        }
+    };
+    ladderAnimationId = requestAnimationFrame(step);
+}
+
 function renderLadder() {
+    stopLadderAnimation();
     const { items, limited, total } = getLadderItems();
     if (items.length < 2) {
         ladderTitle.textContent = `${getCategoryLabel(activeCategory)} 사다리 게임`;
@@ -353,6 +419,7 @@ function renderLadder() {
         ladderTop.innerHTML = '';
         ladderBottom.innerHTML = '';
         ladderResult.textContent = '다른 카테고리를 선택해 주세요.';
+        ladderResult.classList.remove('is-reveal');
         ladderCanvas.style.height = '0px';
         ladderState = null;
         return;
@@ -370,6 +437,7 @@ function renderLadder() {
     ladderTop.innerHTML = '';
     ladderBottom.innerHTML = '';
     ladderResult.textContent = '결과가 여기에 표시됩니다.';
+    ladderResult.classList.remove('is-reveal');
 
     items.forEach((menu, index) => {
         const button = document.createElement('button');
@@ -380,11 +448,32 @@ function renderLadder() {
 
         const end = document.createElement('div');
         end.className = 'ladder-end';
+        end.dataset.index = index;
         end.textContent = menu.name;
         ladderBottom.appendChild(end);
     });
 
     requestAnimationFrame(() => drawLadder(null));
+}
+
+function clearResultEffects() {
+    ladderResult.classList.remove('is-reveal');
+    ladderBottom.querySelectorAll('.ladder-end').forEach((end) => {
+        end.classList.remove('is-reveal');
+    });
+}
+
+function revealResult(startIndex, resultMenu, endIndex) {
+    ladderResult.textContent = `선택 ${startIndex + 1} 결과: ${resultMenu.name}`;
+    ladderResult.classList.remove('is-reveal');
+    void ladderResult.offsetWidth;
+    ladderResult.classList.add('is-reveal');
+    const targetEnd = ladderBottom.querySelector(`.ladder-end[data-index="${endIndex}"]`);
+    if (targetEnd) {
+        targetEnd.classList.remove('is-reveal');
+        void targetEnd.offsetWidth;
+        targetEnd.classList.add('is-reveal');
+    }
 }
 
 function setModalOpen(isOpen) {
@@ -393,6 +482,8 @@ function setModalOpen(isOpen) {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     if (isOpen) {
         renderLadder();
+    } else {
+        stopLadderAnimation();
     }
 }
 
@@ -455,15 +546,23 @@ ladderRerollBtn.addEventListener('click', () => {
 ladderTop.addEventListener('click', (event) => {
     const button = event.target.closest('.ladder-start');
     if (!button || !ladderState) return;
+    stopLadderAnimation();
+    clearResultEffects();
     const index = Number(button.dataset.index);
     ladderState.activeIndex = index;
     ladderTop.querySelectorAll('.ladder-start').forEach((btn) => {
         btn.classList.toggle('is-active', btn === button);
+        btn.disabled = true;
     });
-    drawLadder(index);
     const resultIndex = ladderState.mapping[index];
     const resultMenu = ladderState.items[resultIndex];
-    ladderResult.textContent = `선택 ${index + 1} 결과: ${resultMenu.name}`;
+    animateLadder(index, () => {
+        if (!ladderState || ladderState.activeIndex !== index) return;
+        ladderTop.querySelectorAll('.ladder-start').forEach((btn) => {
+            btn.disabled = false;
+        });
+        revealResult(index, resultMenu, resultIndex);
+    });
 });
 
 document.addEventListener('keydown', (event) => {
@@ -474,7 +573,9 @@ document.addEventListener('keydown', (event) => {
 
 window.addEventListener('resize', () => {
     if (ladderModal.classList.contains('is-open')) {
-        drawLadder(ladderState ? ladderState.activeIndex : null);
+        if (!ladderAnimationId) {
+            drawLadder(ladderState ? ladderState.activeIndex : null);
+        }
     }
 });
 
