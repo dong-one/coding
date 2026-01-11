@@ -8,9 +8,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>Lotto Number Generator</h1>
+        <div class="language-selector">
+            <button id="lang-en">English</button>
+            <button id="lang-ko">한글</button>
+        </div>
+        <h1 data-lang="title">Lotto Number Generator</h1>
         <div class="game-options">
-            <label for="game-count">Number of Games:</label>
+            <label for="game-count" data-lang="gameCountLabel">Number of Games:</label>
             <select id="game-count">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -20,8 +24,8 @@
             </select>
         </div>
         <div id="numbers" class="numbers-container"></div>
-        <button id="generate-btn">Generate Numbers</button>
-        <button id="manual-btn">Manual Selection</button>
+        <button id="generate-btn" data-lang="generateButton">Generate Numbers</button>
+        <button id="manual-btn" data-lang="manualButton">Manual Selection</button>
         <div class="theme-switch-wrapper">
             <label class="theme-switch" for="checkbox">
                 <input type="checkbox" id="checkbox" />
@@ -33,9 +37,9 @@
     <div id="manual-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
-            <h2>Select 6 Numbers</h2>
+            <h2 data-lang="manualModalTitle">Select 6 Numbers</h2>
             <div id="manual-numbers" class="manual-numbers-grid"></div>
-            <button id="manual-select-btn">Confirm Selection</button>
+            <button id="manual-select-btn" data-lang="manualConfirmButton">Confirm Selection</button>
         </div>
     </div>
 

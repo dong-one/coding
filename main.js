@@ -7,10 +7,52 @@ const manualModal = document.getElementById('manual-modal');
 const closeBtn = document.querySelector('.close-btn');
 const manualNumbersGrid = document.getElementById('manual-numbers');
 const manualSelectBtn = document.getElementById('manual-select-btn');
+const langEnBtn = document.getElementById('lang-en');
+const langKoBtn = document.getElementById('lang-ko');
 
 let selectedNumbers = new Set();
 
+const translations = {
+    en: {
+        title: 'Lotto Number Generator',
+        gameCountLabel: 'Number of Games:',
+        generateButton: 'Generate Numbers',
+        manualButton: 'Manual Selection',
+        manualModalTitle: 'Select 6 Numbers',
+        manualConfirmButton: 'Confirm Selection',
+        manualSelectionTitle: 'Your Manual Selection',
+        alertSelect6Numbers: 'Please select exactly 6 numbers.',
+        alertMax6Numbers: 'You can only select up to 6 numbers.',
+        lottoNumbersTitle: 'Lotto Numbers'
+    },
+    ko: {
+        title: '로또 번호 생성기',
+        gameCountLabel: '게임 수:',
+        generateButton: '번호 생성',
+        manualButton: '수동 선택',
+        manualModalTitle: '6개의 번호를 선택하세요',
+        manualConfirmButton: '선택 완료',
+        manualSelectionTitle: '내 수동 선택',
+        alertSelect6Numbers: '6개의 번호를 선택해주세요.',
+        alertMax6Numbers: '최대 6개까지 선택할 수 있습니다.',
+        lottoNumbersTitle: '로또 번호'
+    }
+};
+
+function switchLanguage(lang) {
+    document.querySelectorAll('[data-lang]').forEach(el => {
+        const key = el.getAttribute('data-lang');
+        if (translations[lang] && translations[lang][key]) {
+            el.textContent = translations[lang][key];
+        }
+    });
+    document.documentElement.lang = lang;
+}
+
 // --- Event Listeners ---
+
+langEnBtn.addEventListener('click', () => switchLanguage('en'));
+langKoBtn.addEventListener('click', () => switchLanguage('ko'));
 
 generateBtn.addEventListener('click', () => {
     const gameCount = parseInt(gameCountSelect.value, 10);
@@ -40,15 +82,16 @@ window.addEventListener('click', (event) => {
 });
 
 manualSelectBtn.addEventListener('click', () => {
+    const lang = document.documentElement.lang;
     if (selectedNumbers.size !== 6) {
-        alert('Please select exactly 6 numbers.');
+        alert(translations[lang].alertSelect6Numbers);
         return;
     }
     const winningNumbers = Array.from(selectedNumbers).sort((a, b) => a - b);
     const { bonusNumber } = generateLottoNumbers(new Set(winningNumbers));
 
     numbersContainer.innerHTML = ''; // Clear previous results
-    displayGame(winningNumbers, bonusNumber, 'Your Manual Selection');
+    displayGame(winningNumbers, bonusNumber, translations[lang].manualSelectionTitle);
     manualModal.style.display = 'none';
 });
 
@@ -79,14 +122,18 @@ function generateLottoNumbers(exclude = new Set()) {
     };
 }
 
-function displayGame(winningNumbers, bonusNumber, title = 'Lotto Numbers') {
-    numbersContainer.innerHTML += createGameHTML(winningNumbers, bonusNumber, title);
+function displayGame(winningNumbers, bonusNumber, title) {
+    const lang = document.documentElement.lang;
+    const gameTitle = title || translations[lang].lottoNumbersTitle;
+    numbersContainer.innerHTML += createGameHTML(winningNumbers, bonusNumber, gameTitle);
 }
 
-function createGameHTML(winningNumbers, bonusNumber, title = 'Lotto Numbers') {
+function createGameHTML(winningNumbers, bonusNumber, title) {
+    const lang = document.documentElement.lang;
+    const gameTitle = title || translations[lang].lottoNumbersTitle;
     const gameHTML = `
         <div class="game">
-            <h3>${title}</h3>
+            <h3>${gameTitle}</h3>
             <div class="winning-numbers">
                 ${winningNumbers.map(num => `<span class="number">${num}</span>`).join('')}
                 <span class="plus-sign">+</span>
@@ -108,6 +155,7 @@ function renderManualNumbersGrid() {
 
         numberCell.addEventListener('click', () => {
             const num = parseInt(numberCell.dataset.number, 10);
+            const lang = document.documentElement.lang;
             if (selectedNumbers.has(num)) {
                 selectedNumbers.delete(num);
                 numberCell.classList.remove('selected');
@@ -116,10 +164,13 @@ function renderManualNumbersGrid() {
                     selectedNumbers.add(num);
                     numberCell.classList.add('selected');
                 } else {
-                    alert('You can only select up to 6 numbers.');
+                    alert(translations[lang].alertMax6Numbers);
                 }
             }
         });
         manualNumbersGrid.appendChild(numberCell);
     }
 }
+
+// Set initial language
+switchLanguage('en');
