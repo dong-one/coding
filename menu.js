@@ -261,9 +261,10 @@ function resetSlotEffects() {
 }
 
 function startSlotMachine() {
-    const pool = filterMenus();
+    const currentName = menuTitle.textContent;
+    const pool = filterMenus().filter((menu) => menu.name !== currentName);
     if (pool.length === 0) {
-        updateHero(null);
+        updateHero(pickRandomMenu());
         return;
     }
     if (slotRunning) return;
