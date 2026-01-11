@@ -88,6 +88,31 @@
         </div>
     </div>
 
+    <div class="modal result-modal" id="result-modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal-backdrop" data-close="true"></div>
+        <div class="modal-card result-card" role="document">
+            <div class="celebration">
+                <span></span><span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="modal-header">
+                <div>
+                    <span class="badge">CONGRATS</span>
+                    <h3>선택 완료!</h3>
+                </div>
+                <button class="btn text" id="result-close" aria-label="결과 닫기">닫기</button>
+            </div>
+            <div class="result-hero">
+                <img id="result-image" alt="선택된 메뉴 이미지" />
+                <div class="result-info">
+                    <span class="pill" id="result-category">카테고리</span>
+                    <h4 id="result-name">메뉴 이름</h4>
+                    <p>오늘의 선택을 축하합니다. 맛있게 즐겨보세요!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="menu.js"></script>
 </body>
 </html>

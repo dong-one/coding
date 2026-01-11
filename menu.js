@@ -104,6 +104,11 @@ const ladderBottom = document.getElementById('ladder-bottom');
 const ladderCanvas = document.getElementById('ladder-canvas');
 const ladderRerollBtn = document.getElementById('ladder-reroll');
 const ladderResult = document.getElementById('ladder-result');
+const resultModal = document.getElementById('result-modal');
+const resultCloseBtn = document.getElementById('result-close');
+const resultImage = document.getElementById('result-image');
+const resultName = document.getElementById('result-name');
+const resultCategory = document.getElementById('result-category');
 
 let activeCategory = 'all';
 let savedMenus = [];
@@ -201,6 +206,47 @@ function renderSaved() {
 
 function getCategoryLabel(category) {
     return categoryLabels[category] || '전체';
+}
+
+function getCategoryAccent(category) {
+    const accents = {
+        korean: '#ff6b2d',
+        japanese: '#0d8bff',
+        chinese: '#ff8a1a',
+        western: '#1c1a16',
+        street: '#4c7cff',
+        dessert: '#ff4f9a',
+        all: '#0d8bff'
+    };
+    return accents[category] || '#0d8bff';
+}
+
+function buildMenuImage(menu) {
+    const accent = getCategoryAccent(menu.category);
+    const label = menu.name;
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="720" height="520">
+            <defs>
+                <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#fff5e8"/>
+                    <stop offset="55%" stop-color="${accent}" stop-opacity="0.2"/>
+                    <stop offset="100%" stop-color="#f3efe7"/>
+                </linearGradient>
+                <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#ffffff"/>
+                    <stop offset="100%" stop-color="#f3efe7"/>
+                </linearGradient>
+            </defs>
+            <rect width="100%" height="100%" rx="36" fill="url(#bg)"/>
+            <circle cx="360" cy="290" r="160" fill="url(#plate)" stroke="#e2dbd3" stroke-width="6"/>
+            <circle cx="360" cy="290" r="120" fill="#ffffff" stroke="#f0e7de" stroke-width="4"/>
+            <path d="M250 250c30-40 120-60 190-30" fill="none" stroke="${accent}" stroke-width="10" stroke-linecap="round"/>
+            <path d="M280 330c40 30 140 40 190 5" fill="none" stroke="#ff9d1a" stroke-width="8" stroke-linecap="round"/>
+            <text x="360" y="120" text-anchor="middle" font-size="28" font-family="Space Grotesk, Segoe UI, sans-serif" fill="#1c1a16" font-weight="700">${label}</text>
+            <text x="360" y="160" text-anchor="middle" font-size="16" font-family="Space Grotesk, Segoe UI, sans-serif" fill="#6a635e">오늘의 선택</text>
+        </svg>
+    `;
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
 function shuffleArray(items) {
@@ -394,7 +440,7 @@ function animateLadder(startIndex, onComplete) {
     const path = buildPathSegments(startIndex);
     if (!path) return;
     const totalLength = path.segments.reduce((sum, seg) => sum + Math.hypot(seg.x2 - seg.x1, seg.y2 - seg.y1), 0);
-    const duration = Math.min(2200, Math.max(900, totalLength * 2));
+    const duration = Math.min(3300, Math.max(1350, totalLength * 3));
     const startTime = performance.now();
 
     const step = (now) => {
@@ -476,6 +522,28 @@ function revealResult(startIndex, resultMenu, endIndex) {
     }
 }
 
+function setResultModalOpen(isOpen) {
+    resultModal.classList.toggle('is-open', isOpen);
+    resultModal.setAttribute('aria-hidden', String(!isOpen));
+    if (isOpen) {
+        const confetti = resultModal.querySelectorAll('.celebration span');
+        confetti.forEach((piece) => {
+            piece.style.animation = 'none';
+        });
+        void resultModal.offsetWidth;
+        confetti.forEach((piece) => {
+            piece.style.animation = '';
+        });
+    }
+}
+
+function openResultModal(menu) {
+    resultName.textContent = menu.name;
+    resultCategory.textContent = getCategoryLabel(menu.category);
+    resultImage.src = buildMenuImage(menu);
+    setResultModalOpen(true);
+}
+
 function setModalOpen(isOpen) {
     ladderModal.classList.toggle('is-open', isOpen);
     ladderModal.setAttribute('aria-hidden', String(!isOpen));
@@ -539,6 +607,16 @@ ladderModal.addEventListener('click', (event) => {
     }
 });
 
+resultModal.addEventListener('click', (event) => {
+    if (event.target.dataset.close) {
+        setResultModalOpen(false);
+    }
+});
+
+resultCloseBtn.addEventListener('click', () => {
+    setResultModalOpen(false);
+});
+
 ladderRerollBtn.addEventListener('click', () => {
     renderLadder();
 });
@@ -562,12 +640,18 @@ ladderTop.addEventListener('click', (event) => {
             btn.disabled = false;
         });
         revealResult(index, resultMenu, resultIndex);
+        setTimeout(() => {
+            openResultModal(resultMenu);
+        }, 250);
     });
 });
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && ladderModal.classList.contains('is-open')) {
         setModalOpen(false);
+    }
+    if (event.key === 'Escape' && resultModal.classList.contains('is-open')) {
+        setResultModalOpen(false);
     }
 });
 
