@@ -783,7 +783,7 @@ function setActiveCategory(button) {
     activeCategory = button.dataset.category;
     renderGrid();
     if (!slotRunning) {
-        handleRecommend();
+        updateHero(filterMenus()[0] || null);
     }
     if (ladderModal.classList.contains('is-open')) {
         renderLadder();
@@ -793,8 +793,7 @@ function setActiveCategory(button) {
 recommendBtn.addEventListener('click', handleRecommend);
 rerollBtn.addEventListener('click', () => {
     if (slotRunning) return;
-    const menu = pickRandomMenu();
-    updateHero(menu);
+    handleRecommend();
 });
 saveBtn.addEventListener('click', () => {
     const current = menuTitle.textContent;
