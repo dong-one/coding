@@ -206,6 +206,7 @@ let slotTimer = null;
 let slotRunning = false;
 let selectionMode = 'include';
 const selectedMenusByCategory = new Map();
+let categoryTouched = false;
 
 function getTimeSlot() {
     const hour = new Date().getHours();
@@ -850,6 +851,8 @@ function setActiveCategory(button) {
         btn.classList.toggle('is-active', btn === button);
     });
     activeCategory = button.dataset.category;
+    categoryTouched = true;
+    menuGrid.classList.remove('is-hidden');
     renderGrid();
     if (!slotRunning) {
         updateHero(filterMenus()[0] || null);
@@ -1008,7 +1011,6 @@ window.addEventListener('resize', () => {
     }
 });
 
-renderGrid();
 updateHero(menuData[0]);
 renderSaved();
 updateSelectionUI();

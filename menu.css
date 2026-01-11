@@ -348,6 +348,10 @@ body {
     margin-bottom: 36px;
 }
 
+.menu-grid.is-hidden {
+    display: none;
+}
+
 .menu-card {
     background: var(--card);
     border-radius: 20px;
