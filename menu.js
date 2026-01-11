@@ -883,6 +883,10 @@ clearBtn.addEventListener('click', () => {
 categoryButtons.addEventListener('click', (event) => {
     const button = event.target.closest('.chip');
     if (!button) return;
+    if (button.classList.contains('is-active') && !menuGrid.classList.contains('is-hidden')) {
+        menuGrid.classList.add('is-hidden');
+        return;
+    }
     setActiveCategory(button);
 });
 
