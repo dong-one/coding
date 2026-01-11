@@ -8,14 +8,17 @@
 </head>
 <body>
     <div class="page">
+        <div class="top-actions">
+            <a class="btn ghost" href="lotto.html">로또 번호 생성</a>
+        </div>
         <header class="hero">
             <div class="hero-copy">
                 <span class="badge">MENU LAB</span>
                 <h1>오늘 뭐 먹지?</h1>
                 <p>기분, 시간, 취향에 맞게 한 번에 골라주는 메뉴 추천 스튜디오.</p>
                 <div class="hero-actions">
-                    <button class="btn primary" id="recommend-btn">추천 시작</button>
-                    <a class="btn ghost" href="lotto.html">로또 번호 생성</a>
+                    <button class="btn primary big" id="recommend-btn">추천 시작</button>
+                    <button class="btn ghost" id="ladder-open">사다리 게임</button>
                 </div>
             </div>
             <div class="hero-card">
@@ -49,7 +52,6 @@
                     <h3>카테고리</h3>
                     <span class="hint">버튼을 눌러 취향을 좁혀보세요.</span>
                 </div>
-                <button class="btn ghost small" id="ladder-open">사다리 게임</button>
             </div>
             <div class="filter-buttons" id="category-buttons">
                 <button class="chip is-active" data-category="all">전체</button>

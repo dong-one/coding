@@ -28,6 +28,12 @@ body {
     padding: 48px 24px 80px;
 }
 
+.top-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
 .hero {
     display: grid;
     grid-template-columns: minmax(260px, 1.2fr) minmax(280px, 1fr);
@@ -239,6 +245,11 @@ body {
 .btn.small {
     padding: 8px 14px;
     font-size: 0.9rem;
+}
+
+.btn.big {
+    padding: 14px 22px;
+    font-size: 1.05rem;
 }
 
 .btn:hover {
