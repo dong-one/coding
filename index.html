@@ -71,6 +71,29 @@
             </div>
             <div id="disqus_thread"></div>
         </section>
+
+        <section class="partner">
+            <div class="partner-header">
+                <h3>제휴 문의</h3>
+                <span class="hint">간단한 정보만 남겨주시면 연락드릴게요.</span>
+            </div>
+            <form class="partner-form" action="https://formspree.io/f/xjggbznp" method="POST">
+                <label>
+                    <span>이름</span>
+                    <input type="text" name="name" placeholder="담당자 이름" required>
+                </label>
+                <label>
+                    <span>이메일</span>
+                    <input type="email" name="email" placeholder="contact@email.com" required>
+                </label>
+                <label class="span-2">
+                    <span>문의 내용</span>
+                    <textarea name="message" rows="4" placeholder="간단한 제휴 내용을 적어주세요." required></textarea>
+                </label>
+                <button class="btn primary span-2" type="submit">제휴 문의 보내기</button>
+            </form>
+            <p class="form-note">응답 확인을 위해 이메일을 정확히 입력해 주세요.</p>
+        </section>
     </div>
 
     <div class="modal" id="ladder-modal" aria-hidden="true" role="dialog" aria-modal="true">
