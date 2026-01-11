@@ -63,6 +63,14 @@
                 <p class="empty-state">아직 저장된 메뉴가 없습니다.</p>
             </div>
         </section>
+
+        <section class="comments">
+            <div class="comments-header">
+                <h3>댓글</h3>
+                <span class="hint">디스커스로 의견을 남겨주세요.</span>
+            </div>
+            <div id="disqus_thread"></div>
+        </section>
     </div>
 
     <div class="modal" id="ladder-modal" aria-hidden="true" role="dialog" aria-modal="true">
@@ -114,5 +122,15 @@
     </div>
 
     <script src="menu.js"></script>
+    <script>
+        (function () {
+            const d = document;
+            const s = d.createElement('script');
+            s.src = 'https://cpding.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', Date.now().toString());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
 </body>
 </html>
