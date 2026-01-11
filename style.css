@@ -136,11 +136,12 @@ body.dark-mode #game-count {
 
 .numbers-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
     gap: 20px; /* Increased gap for better separation */
     margin-bottom: 2.5rem;
     padding: 10px;
+    overflow-x: auto;
 }
 
 .game {
@@ -150,8 +151,8 @@ body.dark-mode #game-count {
     padding: 20px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     min-width: 220px;
-    flex: 1 1 calc(50% - 30px); /* Adjust to allow two games per row comfortably */
-    max-width: calc(50% - 30px);
+    flex: 0 0 auto;
+    max-width: none;
     display: flex;
     flex-direction: column;
     align-items: center;

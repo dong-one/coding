@@ -175,17 +175,7 @@ langEnBtn.addEventListener('click', () => switchLanguage('en'));
 langKoBtn.addEventListener('click', () => switchLanguage('ko'));
 
 generateBtn.addEventListener('click', () => {
-    const gameCount = parseInt(gameCountSelect.value, 10);
-    numbersContainer.innerHTML = ''; // Clear previous results
-    manualSelections = []; // Clear manual selections when generating new ones
-    cleanupManualModals(); // Clean up any lingering manual modals
-
-    let allGamesHTML = '';
-    for (let i = 0; i < gameCount; i++) {
-        const { winningNumbers, bonusNumber } = generateLottoNumbers();
-        allGamesHTML += createGameHTML(winningNumbers, bonusNumber);
-    }
-    numbersContainer.innerHTML = allGamesHTML;
+    generateAutoGames();
 });
 
 manualBtn.addEventListener('click', () => {
@@ -207,6 +197,9 @@ manualBtn.addEventListener('click', () => {
     }
 });
 
+gameCountSelect.addEventListener('change', () => {
+    generateAutoGames();
+});
 
 themeSwitch.addEventListener('change', () => {
     document.body.classList.toggle('dark-mode');
@@ -233,6 +226,20 @@ function generateLottoNumbers(exclude = new Set()) {
         winningNumbers: Array.from(numbers).sort((a, b) => a - b),
         bonusNumber: bonusNumber
     };
+}
+
+function generateAutoGames() {
+    const gameCount = parseInt(gameCountSelect.value, 10);
+    numbersContainer.innerHTML = ''; // Clear previous results
+    manualSelections = []; // Clear manual selections when generating new ones
+    cleanupManualModals(); // Clean up any lingering manual modals
+
+    let allGamesHTML = '';
+    for (let i = 0; i < gameCount; i++) {
+        const { winningNumbers, bonusNumber } = generateLottoNumbers();
+        allGamesHTML += createGameHTML(winningNumbers, bonusNumber);
+    }
+    numbersContainer.innerHTML = allGamesHTML;
 }
 
 function displayGame(winningNumbers, bonusNumber, title) {
