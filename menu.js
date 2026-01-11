@@ -222,21 +222,37 @@ function filterMenus() {
     return menuData.filter((menu) => menu.category === activeCategory);
 }
 
-function getSelectionSet() {
-    if (!selectedMenusByCategory.has(activeCategory)) {
-        selectedMenusByCategory.set(activeCategory, new Set());
+function getCategorySelection(category) {
+    if (!selectedMenusByCategory.has(category)) {
+        selectedMenusByCategory.set(category, new Set());
     }
-    return selectedMenusByCategory.get(activeCategory);
+    return selectedMenusByCategory.get(category);
+}
+
+function getAllSelections() {
+    const all = new Set();
+    selectedMenusByCategory.forEach((set) => {
+        set.forEach((name) => all.add(name));
+    });
+    return all;
+}
+
+function getSelectionForActiveCategory() {
+    if (activeCategory === 'all') {
+        return getAllSelections();
+    }
+    return getCategorySelection(activeCategory);
 }
 
 function updateSelectionUI() {
-    const count = getSelectionSet().size;
+    const count = getSelectionForActiveCategory().size;
+    const totalCount = getAllSelections().size;
     selectionCount.textContent = `선택 ${count}개`;
-    selectionReset.disabled = count === 0;
+    selectionReset.disabled = totalCount === 0;
 }
 
 function applySelectionFilter(pool) {
-    const selection = getSelectionSet();
+    const selection = getSelectionForActiveCategory();
     if (selection.size === 0) {
         return pool;
     }
@@ -348,7 +364,7 @@ function startSlotMachine() {
 
 function renderGrid() {
     const pool = filterMenus();
-    const selection = getSelectionSet();
+    const selection = getSelectionForActiveCategory();
     menuGrid.innerHTML = '';
     pool.forEach((menu) => {
         const card = document.createElement('article');
@@ -364,11 +380,14 @@ function renderGrid() {
             </div>
         `;
         card.addEventListener('click', () => {
-            if (selection.has(menu.name)) {
-                selection.delete(menu.name);
+            const targetSet = activeCategory === 'all'
+                ? getCategorySelection(menu.category)
+                : getCategorySelection(activeCategory);
+            if (targetSet.has(menu.name)) {
+                targetSet.delete(menu.name);
                 card.classList.remove('is-selected');
             } else {
-                selection.add(menu.name);
+                targetSet.add(menu.name);
                 card.classList.add('is-selected');
             }
             updateSelectionUI();
@@ -879,7 +898,7 @@ excludeBtn.addEventListener('click', () => {
 });
 
 selectionReset.addEventListener('click', () => {
-    getSelectionSet().clear();
+    selectedMenusByCategory.clear();
     renderGrid();
 });
 
