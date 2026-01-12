@@ -649,6 +649,11 @@ body {
     gap: 12px;
 }
 
+.ladder-section.is-hidden,
+.ladder-section[hidden] {
+    display: none;
+}
+
 .ladder-inputs span {
     display: block;
     color: var(--muted);
