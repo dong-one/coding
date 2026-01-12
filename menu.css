@@ -647,6 +647,29 @@ body {
     gap: 10px;
 }
 
+.ladder-select {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--ink);
+}
+
+.ladder-select:focus {
+    outline: none;
+    border-color: rgba(13, 139, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(13, 139, 255, 0.12);
+    background: #fff;
+}
+
+.ladder-hint {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
 .ladder-input-list {
     display: grid;
     gap: 8px;

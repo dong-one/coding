@@ -336,10 +336,10 @@ const ladderCanvas = document.getElementById('ladder-canvas');
 const ladderRerollBtn = document.getElementById('ladder-reroll');
 const ladderResult = document.getElementById('ladder-result');
 const ladderManualBtn = document.getElementById('ladder-manual');
+const ladderCategorySelect = document.getElementById('ladder-category');
+const ladderCountSelect = document.getElementById('ladder-count');
 const ladderTopList = document.getElementById('ladder-top-list');
 const ladderBottomList = document.getElementById('ladder-bottom-list');
-const ladderTopAdd = document.getElementById('ladder-top-add');
-const ladderBottomAdd = document.getElementById('ladder-bottom-add');
 const resultModal = document.getElementById('result-modal');
 const resultCloseBtn = document.getElementById('result-close');
 const resultImage = document.getElementById('result-image');
@@ -360,6 +360,7 @@ const disqusThread = document.getElementById('disqus_thread');
 const formNote = document.querySelector('.form-note');
 
 let activeCategory = 'all';
+let ladderCategory = 'all';
 let savedMenus = [];
 let ladderState = null;
 let ladderAnimationId = null;
@@ -641,12 +642,14 @@ function shuffleArray(items) {
     return items;
 }
 
-function getLadderItems() {
-    const pool = filterMenus();
+function getLadderItems(category) {
+    const pool = category === 'all'
+        ? menuData
+        : menuData.filter((menu) => menu.category === category);
     if (pool.length <= 1) {
         return { items: pool, limited: false, total: pool.length };
     }
-    const maxItems = activeCategory === 'all' ? 6 : pool.length;
+    const maxItems = 12;
     let items = pool;
     let limited = false;
     if (pool.length > maxItems) {
@@ -662,11 +665,48 @@ function parseManualInputs(list) {
         .filter((item) => item.length > 0);
 }
 
-function addManualInput(list, placeholder) {
+function buildManualInput(list, placeholder, value = '') {
     const input = document.createElement('input');
     input.type = 'text';
     input.placeholder = placeholder;
+    input.value = value;
     list.appendChild(input);
+}
+
+function syncManualInputs(count) {
+    const safeCount = Math.min(12, Math.max(2, count));
+    const topValues = parseManualInputs(ladderTopList);
+    const bottomValues = parseManualInputs(ladderBottomList);
+    ladderTopList.innerHTML = '';
+    ladderBottomList.innerHTML = '';
+    for (let i = 0; i < safeCount; i += 1) {
+        const alpha = String.fromCharCode(65 + i);
+        buildManualInput(ladderTopList, `예: ${alpha}`, topValues[i] || '');
+        buildManualInput(ladderBottomList, `예: 메뉴${i + 1}`, bottomValues[i] || '');
+    }
+}
+
+function populateLadderCount() {
+    ladderCountSelect.innerHTML = '';
+    for (let i = 2; i <= 12; i += 1) {
+        const option = document.createElement('option');
+        option.value = String(i);
+        option.textContent = `${i}개`;
+        ladderCountSelect.appendChild(option);
+    }
+    ladderCountSelect.value = '2';
+    syncManualInputs(Number(ladderCountSelect.value));
+}
+
+function populateLadderCategories() {
+    ladderCategorySelect.innerHTML = '';
+    Object.entries(categoryLabels).forEach(([key, label]) => {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = label;
+        ladderCategorySelect.appendChild(option);
+    });
+    ladderCategorySelect.value = ladderCategory;
 }
 
 function buildLadderState(items, topLabels = null) {
@@ -860,11 +900,12 @@ function renderLadder(manual = false) {
         return;
     }
     if (manual) {
+        const count = Number(ladderCountSelect.value) || 0;
         const topValues = parseManualInputs(ladderTopList);
         const bottomValues = parseManualInputs(ladderBottomList);
-        if (topValues.length < 2 || bottomValues.length < 2) {
+        if (count < 2 || topValues.length < count || bottomValues.length < count) {
             ladderTitle.textContent = '수동 사다리 게임';
-            ladderDesc.textContent = '위/아래에 2개 이상 입력해 주세요.';
+            ladderDesc.textContent = '선택한 게임 수만큼 모두 입력해 주세요.';
             ladderTop.innerHTML = '';
             ladderBottom.innerHTML = '';
             ladderResult.textContent = '입력을 확인해 주세요.';
@@ -873,7 +914,6 @@ function renderLadder(manual = false) {
             ladderState = null;
             return;
         }
-        const count = Math.min(topValues.length, bottomValues.length);
         const items = bottomValues.slice(0, count).map((label) => ({
             name: label,
             category: 'manual',
@@ -907,9 +947,9 @@ function renderLadder(manual = false) {
         requestAnimationFrame(() => drawLadder(null));
         return;
     }
-    const { items, limited, total } = getLadderItems();
+    const { items, limited, total } = getLadderItems(ladderCategory);
     if (items.length < 2) {
-        ladderTitle.textContent = `${getCategoryLabel(activeCategory)} 사다리 게임`;
+        ladderTitle.textContent = `${getCategoryLabel(ladderCategory)} 사다리 게임`;
         ladderDesc.textContent = '해당 카테고리에 메뉴가 충분하지 않습니다.';
         ladderTop.innerHTML = '';
         ladderBottom.innerHTML = '';
@@ -920,7 +960,7 @@ function renderLadder(manual = false) {
         return;
     }
 
-    ladderTitle.textContent = `${getCategoryLabel(activeCategory)} 사다리 게임`;
+    ladderTitle.textContent = `${getCategoryLabel(ladderCategory)} 사다리 게임`;
     ladderDesc.textContent = limited
         ? `전체 메뉴 ${total}개 중 ${items.length}개로 사다리를 만들었습니다.`
         : '시작 지점을 눌러 메뉴 결과를 확인하세요.';
@@ -998,6 +1038,8 @@ function setModalOpen(isOpen) {
     ladderModal.setAttribute('aria-hidden', String(!isOpen));
     document.body.style.overflow = isOpen ? 'hidden' : '';
     if (isOpen) {
+        ladderCategory = activeCategory;
+        ladderCategorySelect.value = ladderCategory;
         renderLadder();
     } else {
         stopLadderAnimation();
@@ -1139,12 +1181,13 @@ ladderManualBtn.addEventListener('click', () => {
     renderLadder(true);
 });
 
-ladderTopAdd.addEventListener('click', () => {
-    addManualInput(ladderTopList, '예: A');
+ladderCategorySelect.addEventListener('change', () => {
+    ladderCategory = ladderCategorySelect.value;
+    renderLadder();
 });
 
-ladderBottomAdd.addEventListener('click', () => {
-    addManualInput(ladderBottomList, '예: 메뉴');
+ladderCountSelect.addEventListener('change', () => {
+    syncManualInputs(Number(ladderCountSelect.value));
 });
 
 ladderTop.addEventListener('click', (event) => {
@@ -1190,5 +1233,7 @@ window.addEventListener('resize', () => {
 });
 
 updateHero(menuData[0]);
+populateLadderCategories();
+populateLadderCount();
 renderSaved();
 updateSelectionUI();
