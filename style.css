@@ -356,6 +356,7 @@ body.theme-dark select {
     border-radius: 14px;
     padding: 10px 0;
     font-weight: 700;
+    color: var(--color-ink);
     cursor: pointer;
     transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
@@ -366,8 +367,9 @@ body.theme-dark .number-chip {
 
 .number-chip.selected {
     background: linear-gradient(135deg, #1fc7a4, #ff7a1a);
-    color: #151515;
+    color: #ffffff;
     border-color: rgba(255, 122, 26, 0.7);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 .number-chip.is-picked {
