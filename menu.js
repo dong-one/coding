@@ -142,6 +142,162 @@ const menuData = [
         category: 'dessert',
         description: '쌉싸름함과 달콤함의 밸런스.',
         tags: ['디저트', '여유', '감성']
+    },
+    {
+        name: '전주식당',
+        category: 'strategy',
+        description: '전략팀이 자주 찾는 한식 맛집.',
+        tags: ['전략팀', '한식', '추천']
+    },
+    {
+        name: '원할머니 보쌈',
+        category: 'strategy',
+        description: '든든한 보쌈 한 상.',
+        tags: ['전략팀', '보쌈', '든든함']
+    },
+    {
+        name: '청도식당',
+        category: 'strategy',
+        description: '편하게 먹기 좋은 식당.',
+        tags: ['전략팀', '식당', '편안함']
+    },
+    {
+        name: '불백',
+        category: 'strategy',
+        description: '불향 가득한 불백 한 끼.',
+        tags: ['전략팀', '불향', '한그릇']
+    },
+    {
+        name: '쌀국수',
+        category: 'strategy',
+        description: '담백한 육수의 쌀국수.',
+        tags: ['전략팀', '국물', '담백함']
+    },
+    {
+        name: '돈카츠 (고리)',
+        category: 'strategy',
+        description: '바삭한 돈카츠로 만족감.',
+        tags: ['전략팀', '돈카츠', '바삭함']
+    },
+    {
+        name: '돈카츠 (참새)',
+        category: 'strategy',
+        description: '바삭함 가득한 돈카츠.',
+        tags: ['전략팀', '돈카츠', '든든함']
+    },
+    {
+        name: '삼계탕(B1)',
+        category: 'strategy',
+        description: '속을 따뜻하게 채우는 삼계탕.',
+        tags: ['전략팀', '보양', '국물']
+    },
+    {
+        name: '닭갈비 (유가네)',
+        category: 'strategy',
+        description: '매콤한 닭갈비로 기분전환.',
+        tags: ['전략팀', '매콤', '닭갈비']
+    },
+    {
+        name: '버거킹',
+        category: 'strategy',
+        description: '두툼한 패티의 클래식 버거.',
+        tags: ['전략팀', '버거', '간편함']
+    },
+    {
+        name: '맘스터치',
+        category: 'strategy',
+        description: '푸짐한 치킨 버거 한 입.',
+        tags: ['전략팀', '버거', '푸짐함']
+    },
+    {
+        name: '초밥',
+        category: 'strategy',
+        description: '신선한 초밥으로 깔끔하게.',
+        tags: ['전략팀', '일식', '신선함']
+    },
+    {
+        name: '순대국(시장)',
+        category: 'strategy',
+        description: '진한 국물의 순대국.',
+        tags: ['전략팀', '국밥', '든든함']
+    },
+    {
+        name: '김치찜',
+        category: 'strategy',
+        description: '칼칼한 김치찜 한 상.',
+        tags: ['전략팀', '한식', '칼칼함']
+    },
+    {
+        name: '중국집(승환이네)',
+        category: 'strategy',
+        description: '중식으로 든든한 선택.',
+        tags: ['전략팀', '중식', '든든함']
+    },
+    {
+        name: '스파게티(오길비)',
+        category: 'strategy',
+        description: '깔끔하게 즐기는 스파게티.',
+        tags: ['전략팀', '파스타', '양식']
+    },
+    {
+        name: '본죽',
+        category: 'strategy',
+        description: '가볍고 편안한 죽 한 그릇.',
+        tags: ['전략팀', '죽', '편안함']
+    },
+    {
+        name: '매운갈비찜',
+        category: 'strategy',
+        description: '매콤한 갈비찜으로 힘내기.',
+        tags: ['전략팀', '매콤', '갈비찜']
+    },
+    {
+        name: '서울미트',
+        category: 'strategy',
+        description: '든든한 고기 메뉴.',
+        tags: ['전략팀', '고기', '포만감']
+    },
+    {
+        name: '써브웨이',
+        category: 'strategy',
+        description: '간편하게 즐기는 샌드위치.',
+        tags: ['전략팀', '샌드위치', '간편함']
+    },
+    {
+        name: '육개장(이화)',
+        category: 'strategy',
+        description: '얼큰한 육개장 한 그릇.',
+        tags: ['전략팀', '얼큰', '국물']
+    },
+    {
+        name: '국밥(그레이스)',
+        category: 'strategy',
+        description: '든든한 국밥 메뉴.',
+        tags: ['전략팀', '국밥', '든든함']
+    },
+    {
+        name: '북창동순두부',
+        category: 'strategy',
+        description: '따뜻한 순두부찌개.',
+        tags: ['전략팀', '순두부', '국물']
+    },
+    {
+        name: '미아리우동',
+        category: 'strategy',
+        description: '따뜻한 우동으로 가볍게.',
+        tags: ['전략팀', '우동', '깔끔함']
+    },
+    {
+        name: '마라탕(춘리)',
+        category: 'strategy',
+        description: '얼얼하게 즐기는 마라탕.',
+        tags: ['전략팀', '마라', '얼얼함']
+    },
+    {
+        name: '생선구이(장터)',
+        category: 'strategy',
+        description: '담백한 생선구이 한 상.',
+        tags: ['전략팀', '생선', '담백함']
     }
 ];
 
@@ -154,7 +310,8 @@ const categoryLabels = {
     street: '분식',
     dessert: '디저트',
     fastfood: '패스트푸드',
-    vietnamese: '베트남'
+    vietnamese: '베트남',
+    strategy: '전략팀'
 };
 
 const menuTitle = document.getElementById('menu-title');
@@ -442,6 +599,7 @@ function getCategoryAccent(category) {
         dessert: '#ff4f9a',
         fastfood: '#ff6b2d',
         vietnamese: '#18a999',
+        strategy: '#274c77',
         all: '#0d8bff'
     };
     return accents[category] || '#0d8bff';
