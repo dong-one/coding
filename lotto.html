@@ -17,35 +17,39 @@
                     <a class="chip" href="index.html">메뉴 추천으로</a>
                 </div>
             </div>
-            <div class="control-panel">
-                <div class="control-group">
-                    <span class="control-label" data-i18n="language">Language</span>
-                    <div class="control-buttons">
-                        <button id="lang-ko" class="chip">한글</button>
-                        <button id="lang-en" class="chip is-active">English</button>
+            <aside class="hero-panel">
+                <div class="control-panel">
+                    <div class="control-group">
+                        <span class="control-label" data-i18n="language">Language</span>
+                        <div class="control-buttons">
+                            <button id="lang-ko" class="chip">한글</button>
+                            <button id="lang-en" class="chip is-active">English</button>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <span class="control-label" data-i18n="theme">Theme</span>
+                        <div class="control-buttons">
+                            <button id="theme-light" class="chip is-active" data-i18n="lightMode">Light</button>
+                            <button id="theme-dark" class="chip" data-i18n="darkMode">Dark</button>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="game-count" data-i18n="gameCountLabel">Game Count</label>
+                        <select id="game-count">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
                     </div>
                 </div>
-                <div class="control-group">
-                    <span class="control-label" data-i18n="theme">Theme</span>
-                    <div class="control-buttons">
-                        <button id="theme-light" class="chip is-active" data-i18n="lightMode">Light</button>
-                        <button id="theme-dark" class="chip" data-i18n="darkMode">Dark</button>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="game-count" data-i18n="gameCountLabel">Game Count</label>
-                    <select id="game-count">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-            </div>
+            </aside>
         </header>
 
-        <section id="games" class="game-grid"></section>
+        <section class="game-section">
+            <div id="games" class="game-grid"></div>
+        </section>
     </div>
 
     <div class="modal" id="manual-modal" aria-hidden="true">
