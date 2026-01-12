@@ -338,6 +338,8 @@ const ladderResult = document.getElementById('ladder-result');
 const ladderManualBtn = document.getElementById('ladder-manual');
 const ladderCategorySelect = document.getElementById('ladder-category');
 const ladderCountSelect = document.getElementById('ladder-count');
+const ladderModeButtons = document.querySelectorAll('[data-ladder-mode]');
+const ladderSections = document.querySelectorAll('[data-ladder-section]');
 const ladderTopList = document.getElementById('ladder-top-list');
 const ladderBottomList = document.getElementById('ladder-bottom-list');
 const resultModal = document.getElementById('result-modal');
@@ -361,6 +363,7 @@ const formNote = document.querySelector('.form-note');
 
 let activeCategory = 'all';
 let ladderCategory = 'all';
+let ladderMode = 'auto';
 let savedMenus = [];
 let ladderState = null;
 let ladderAnimationId = null;
@@ -709,6 +712,21 @@ function populateLadderCategories() {
     ladderCategorySelect.value = ladderCategory;
 }
 
+function setLadderMode(mode) {
+    ladderMode = mode;
+    ladderModeButtons.forEach((button) => {
+        button.classList.toggle('is-active', button.dataset.ladderMode === mode);
+    });
+    ladderSections.forEach((section) => {
+        section.classList.toggle('is-hidden', section.dataset.ladderSection !== mode);
+    });
+    if (mode === 'manual') {
+        renderLadder(true);
+        return;
+    }
+    renderLadder();
+}
+
 function buildLadderState(items, topLabels = null) {
     const columns = items.length;
     const rows = Math.max(8, columns * 4);
@@ -1040,7 +1058,7 @@ function setModalOpen(isOpen) {
     if (isOpen) {
         ladderCategory = activeCategory;
         ladderCategorySelect.value = ladderCategory;
-        renderLadder();
+        setLadderMode(ladderMode);
     } else {
         stopLadderAnimation();
     }
@@ -1179,6 +1197,15 @@ ladderRerollBtn.addEventListener('click', () => {
 
 ladderManualBtn.addEventListener('click', () => {
     renderLadder(true);
+});
+
+ladderModeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        const mode = button.dataset.ladderMode;
+        if (mode) {
+            setLadderMode(mode);
+        }
+    });
 });
 
 ladderCategorySelect.addEventListener('change', () => {
