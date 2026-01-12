@@ -718,7 +718,9 @@ function setLadderMode(mode) {
         button.classList.toggle('is-active', button.dataset.ladderMode === mode);
     });
     ladderSections.forEach((section) => {
-        section.classList.toggle('is-hidden', section.dataset.ladderSection !== mode);
+        const isActive = section.dataset.ladderSection === mode;
+        section.classList.toggle('is-hidden', !isActive);
+        section.hidden = !isActive;
     });
     if (mode === 'manual') {
         renderLadder(true);
