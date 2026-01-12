@@ -18,7 +18,7 @@ const MAX_NUMBER = 45;
 const translations = {
     en: {
         title: 'Lotto Number Studio',
-        subtitle: 'Design your picks with fast auto draws or precise manual selection.',
+        subtitle: 'Generate picks fast.',
         language: 'Language',
         theme: 'Theme',
         lightMode: 'Light',
@@ -36,7 +36,7 @@ const translations = {
     },
     ko: {
         title: '로또 번호 스튜디오',
-        subtitle: '자동 추첨 또는 수동 선택으로 번호를 만들어 보세요.',
+        subtitle: '빠르게 번호를 생성하세요.',
         language: '언어',
         theme: '테마',
         lightMode: '라이트',

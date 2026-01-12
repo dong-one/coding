@@ -30,7 +30,7 @@
             <div class="hero-copy">
                 <span class="badge">MENU LAB</span>
                 <h1>오늘 뭐 먹지?</h1>
-                <p>기분, 시간, 취향에 맞게 한 번에 골라주는 메뉴 추천 스튜디오.</p>
+                <p>메뉴 추천 스튜디오</p>
                 <div class="hero-actions">
                     <button class="btn primary big" id="recommend-btn">추천 시작</button>
                     <button class="btn ghost" id="ladder-open">사다리 게임</button>
@@ -64,54 +64,20 @@
         <section class="site-info">
             <div class="section-title">
                 <h3>서비스 소개</h3>
-                <p class="hint">오늘의 식사 고민을 줄여주는 간단하고 빠른 메뉴 추천 도구입니다.</p>
             </div>
             <div class="info-grid">
                 <article class="info-card">
                     <h4>카테고리 필터</h4>
-                    <p>카테고리와 포함/제외 선택으로 선호도를 즉시 반영합니다.</p>
+                    <p>포함/제외 기준으로 추천을 좁힙니다.</p>
                 </article>
                 <article class="info-card">
                     <h4>사다리 게임</h4>
-                    <p>자동/수동 사다리로 재밌게 메뉴를 결정할 수 있습니다.</p>
+                    <p>자동/수동으로 결과를 확인합니다.</p>
                 </article>
                 <article class="info-card">
                     <h4>저장 & 다시 보기</h4>
-                    <p>좋았던 메뉴는 저장해두고 다음에도 쉽게 꺼내보세요.</p>
+                    <p>저장한 메뉴를 다시 확인합니다.</p>
                 </article>
-            </div>
-        </section>
-
-        <section class="how-to">
-            <div class="section-title">
-                <h3>사용 방법</h3>
-                <p class="hint">3단계로 오늘의 메뉴를 결정합니다.</p>
-            </div>
-            <ol class="steps">
-                <li>카테고리를 선택하고 포함/제외 기준을 설정합니다.</li>
-                <li>추천 시작을 눌러 결과를 확인하거나 사다리 게임을 이용합니다.</li>
-                <li>마음에 드는 메뉴는 저장해 다음에 다시 확인합니다.</li>
-            </ol>
-        </section>
-
-        <section class="faq">
-            <div class="section-title">
-                <h3>FAQ</h3>
-                <p class="hint">자주 묻는 질문을 정리했습니다.</p>
-            </div>
-            <div class="faq-list">
-                <details>
-                    <summary>추천 기준은 무엇인가요?</summary>
-                    <p>선택한 카테고리와 포함/제외 목록을 기반으로 무작위로 추천합니다.</p>
-                </details>
-                <details>
-                    <summary>사다리 게임은 몇 개까지 가능한가요?</summary>
-                    <p>자동은 카테고리에서 최대 12개, 수동은 사용자가 선택한 게임 수(최대 12개)로 진행됩니다.</p>
-                </details>
-                <details>
-                    <summary>광고 및 데이터는 어떻게 처리되나요?</summary>
-                    <p>광고 관련 정보는 개인정보처리방침에 안내된 범위에서 처리됩니다.</p>
-                </details>
             </div>
         </section>
 
@@ -119,7 +85,6 @@
             <div class="filter-header">
                 <div class="filter-title">
                     <h3>카테고리</h3>
-                    <span class="hint">버튼을 눌러 취향을 좁혀보세요.</span>
                 </div>
             </div>
             <div class="filter-buttons" id="category-buttons">
@@ -135,7 +100,6 @@
                 <button class="chip" data-category="fastfood">패스트푸드</button>
             </div>
             <div class="filter-actions">
-                <span class="hint">메뉴를 복수 선택한 뒤 포함/제외를 선택하세요.</span>
                 <div class="filter-toggle">
                     <button class="btn outline is-active" id="include-btn">포함</button>
                     <button class="btn outline" id="exclude-btn">제외</button>
@@ -162,7 +126,6 @@
         <section class="comments">
             <div class="comments-header">
                 <h3>댓글</h3>
-                <span class="hint">디스커스로 의견을 남겨주세요.</span>
                 <button class="btn outline small" id="comments-toggle">댓글 열기</button>
             </div>
             <div id="disqus_thread" class="is-hidden"></div>
@@ -171,7 +134,6 @@
         <section class="partner">
             <div class="partner-header">
                 <h3>제휴 문의</h3>
-                <span class="hint">간단한 정보만 남겨주시면 연락드릴게요.</span>
                 <button class="btn outline small" id="partner-toggle">문의 열기</button>
             </div>
             <form class="partner-form is-hidden" id="partner-form" action="https://formspree.io/f/xjggbznp" method="POST">
@@ -191,6 +153,37 @@
             </form>
             <p class="form-note is-hidden">응답 확인을 위해 이메일을 정확히 입력해 주세요.</p>
             <p class="partner-status is-hidden" id="partner-status" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="how-to">
+            <div class="section-title">
+                <h3>사용 방법</h3>
+            </div>
+            <ol class="steps">
+                <li>카테고리를 선택하고 포함/제외를 설정합니다.</li>
+                <li>추천 시작 또는 사다리 게임을 실행합니다.</li>
+                <li>필요한 메뉴는 저장합니다.</li>
+            </ol>
+        </section>
+
+        <section class="faq">
+            <div class="section-title">
+                <h3>FAQ</h3>
+            </div>
+            <div class="faq-list">
+                <details>
+                    <summary>추천 기준은 무엇인가요?</summary>
+                    <p>선택한 카테고리와 포함/제외 목록을 기준으로 추천합니다.</p>
+                </details>
+                <details>
+                    <summary>사다리 게임은 몇 개까지 가능한가요?</summary>
+                    <p>자동은 최대 12개, 수동은 선택한 게임 수(최대 12개)로 진행됩니다.</p>
+                </details>
+                <details>
+                    <summary>광고/데이터 처리는 어디서 확인하나요?</summary>
+                    <p>자세한 내용은 개인정보처리방침에서 확인할 수 있습니다.</p>
+                </details>
+            </div>
         </section>
 
         <footer class="site-footer">
