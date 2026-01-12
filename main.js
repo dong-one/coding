@@ -54,8 +54,8 @@ const translations = {
     }
 };
 
-let currentLanguage = 'en';
-let currentTheme = 'light';
+let currentLanguage = 'ko';
+let currentTheme = 'dark';
 let currentGameIndex = null;
 let selectedNumbers = new Set();
 let gamePicks = [];
@@ -105,7 +105,7 @@ function generateAutoPick() {
     return [...nums].sort((a, b) => a - b);
 }
 
-function renderNumbers(container, nums) {
+function renderNumbers(container, nums, mode = '') {
     container.innerHTML = '';
     if (!nums || nums.length === 0) {
         const empty = document.createElement('div');
@@ -116,7 +116,7 @@ function renderNumbers(container, nums) {
     }
     nums.forEach((num) => {
         const ball = document.createElement('span');
-        ball.className = 'ball';
+        ball.className = mode === 'auto' ? 'ball is-auto' : 'ball';
         ball.textContent = num;
         container.appendChild(ball);
     });
@@ -141,7 +141,7 @@ function createGameCard(index) {
     autoBtn.textContent = t('auto');
     autoBtn.addEventListener('click', () => {
         gamePicks[index] = generateAutoPick();
-        renderNumbers(numbers, gamePicks[index]);
+        renderNumbers(numbers, gamePicks[index], 'auto');
     });
 
     const manualBtn = document.createElement('button');
@@ -201,6 +201,9 @@ function buildNumberGrid() {
             }
             selectedNumbers.add(i);
             item.classList.add('selected');
+            item.classList.remove('is-picked');
+            void item.offsetWidth;
+            item.classList.add('is-picked');
         });
         numberGrid.appendChild(item);
     }

@@ -256,6 +256,11 @@ body.theme-dark select {
     animation: pop 0.35s ease;
 }
 
+.ball.is-auto {
+    animation: autoBurst 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 14px 28px rgba(255, 136, 64, 0.45), 0 0 22px rgba(255, 179, 71, 0.6);
+}
+
 .empty-state {
     font-size: 0.95rem;
     color: var(--color-muted);
@@ -365,6 +370,11 @@ body.theme-dark .number-chip {
     border-color: rgba(255, 122, 26, 0.7);
 }
 
+.number-chip.is-picked {
+    animation: chipBurst 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 12px 26px rgba(31, 199, 164, 0.45), 0 0 18px rgba(255, 122, 26, 0.35);
+}
+
 .modal-actions {
     display: flex;
     gap: 12px;
@@ -377,6 +387,37 @@ body.theme-dark .number-chip {
         opacity: 0;
     }
     to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes autoBurst {
+    0% {
+        transform: scale(0.6) rotate(-8deg);
+        filter: brightness(1.2);
+        opacity: 0;
+    }
+    45% {
+        transform: scale(1.15) rotate(3deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        filter: brightness(1);
+    }
+}
+
+@keyframes chipBurst {
+    0% {
+        transform: scale(0.7);
+        opacity: 0.4;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
         transform: scale(1);
         opacity: 1;
     }
