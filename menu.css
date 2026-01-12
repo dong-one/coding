@@ -30,8 +30,35 @@ body {
 
 .top-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
     margin-bottom: 16px;
+}
+
+.brand-link {
+    font-family: var(--font-display);
+    text-decoration: none;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.08em;
+}
+
+.site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.nav-link:hover {
+    color: var(--ink);
 }
 
 .hero {
@@ -40,6 +67,160 @@ body {
     gap: 32px;
     align-items: center;
     margin-bottom: 40px;
+}
+
+.site-info,
+.how-to,
+.faq {
+    margin-bottom: 40px;
+}
+
+.section-title h3 {
+    margin: 0 0 6px;
+    font-size: 1.4rem;
+}
+
+.section-title p {
+    margin: 0;
+}
+
+.info-grid {
+    margin-top: 18px;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.info-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 12px 28px var(--shadow);
+}
+
+.info-card h4 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+}
+
+.steps {
+    margin: 16px 0 0;
+    padding-left: 20px;
+    color: var(--muted);
+}
+
+.steps li {
+    margin-bottom: 8px;
+}
+
+.faq-list {
+    margin-top: 16px;
+    display: grid;
+    gap: 12px;
+}
+
+.faq-list summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.faq-list p {
+    margin: 8px 0 0;
+    color: var(--muted);
+}
+
+.site-footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 10px;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.footer-links a:hover {
+    color: var(--ink);
+}
+
+.footer-meta {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.policy-page .simple-hero {
+    margin: 24px 0 32px;
+}
+
+.simple-hero h1 {
+    margin: 12px 0 8px;
+    font-size: 2.2rem;
+}
+
+.simple-hero p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.content-block {
+    margin-bottom: 28px;
+}
+
+.content-block h2 {
+    margin: 0 0 10px;
+}
+
+.content-list {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--muted);
+}
+
+.content-list li {
+    margin-bottom: 6px;
+}
+
+.contact-form {
+    margin-top: 14px;
+    display: grid;
+    gap: 12px;
+}
+
+.contact-form label {
+    display: grid;
+    gap: 6px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--ink);
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: rgba(13, 139, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(13, 139, 255, 0.12);
+    background: #fff;
 }
 
 .hero-copy h1 {
@@ -982,6 +1163,11 @@ body {
 @media (max-width: 900px) {
     .hero {
         grid-template-columns: 1fr;
+    }
+
+    .top-actions {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .ladder-controls {
